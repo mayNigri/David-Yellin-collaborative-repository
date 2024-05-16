@@ -1,0 +1,12 @@
+Outline Level,ID,Name,Start,Finish,Duration,% Complete,Predecessors,Resource Names,Color,Notes
+1,1,"sign-in",2024-05-15,2024-05-24,8 day,0,"","",,"<p><br></p>"
+1,2,"log-in",2024-05-27,2024-06-07,10 day,0,"1FS","",,"<p><br></p>"
+1,4,"filter lessons",2024-05-15,2024-05-24,8 day,0,"","",,"<p><br></p>"
+1,7,"search lessons",2024-05-15,2024-05-24,8 day,0,"","",,"<p><br></p>"
+1,8,"upload lessons",2024-05-15,2024-05-24,8 day,0,"","",,"<p><br></p>"
+1,9,"download lessons",2024-05-27,2024-06-07,10 day,0,"8FS","",,"<p><br></p>"
+1,10,"modify lessons",2024-05-27,2024-06-07,10 day,0,"8FS","",,"<p><br></p>"
+1,11,"add lessons to favorites ",2024-05-27,2024-06-07,10 day,0,"8FS","",,"<p><br></p>"
+1,3,"rating a lesson",2024-05-27,2024-06-07,10 day,0,"8FS","",,"<p><br></p>"
+1,5,"comment a lesson",2024-05-27,2024-06-07,10 day,0,"8FS","",,"<p><br></p>"
+1,6,"notification",2024-06-10,2024-06-21,10 day,0,"5FS","",,"<p><br></p>"
