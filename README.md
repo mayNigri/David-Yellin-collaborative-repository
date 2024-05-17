@@ -6,3 +6,9 @@
 - Install react `npm install`
 - Start react locally `npm start`
 - Copy `.env` file from the Google Drive.
+
+## Useful commands
+- `npm start` start react server
+- `npm run build` create standalone files for hosting
+- `npm run test` run unit tests
+- `npm install` installs needed dependencies (run every time you pull from git)
