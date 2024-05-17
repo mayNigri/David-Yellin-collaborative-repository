@@ -2,7 +2,7 @@
 
 ## Get Started
 Please follow these steps to start using this project repository
-- Clone this repository `git clone https://github.com/mayNigri/David-Yellin-collaborative-repository`
+- Clone this repository ```git clone https://github.com/mayNigri/David-Yellin-collaborative-repository```
 - Connect to the repository `git remote add origin https://github.com/mayNigri/David-Yellin-collaborative-repository`
 - Install react `npm install`
 - Copy `.env` file from the Google Drive.
