@@ -25,3 +25,6 @@ Below is a detailed breakdown of your existing project structure along with the 
   - `/pages` - pages for each route (need to be updated in `routes.tsx` also)
   - `/services` - services that we are using in the app, example: we have `firebase.tsx` that configures firebase services.
   - `App.tsx` - app root compomnent for routes pages and url paths.
+
+
+This should give you a good understanding of what each file and folder is intended for in your project.
