@@ -34,7 +34,7 @@ Below is a detailed breakdown of your existing project structure along with the 
 - `/src` - code source files directory
 - - `/components` - app components
 - - `/models` - classes for each model in project
-  - `/pages` - pages for each route (need to be updated in `routes.tsx` also)
+  - `/pages` - pages for each route (routes need to be updated in `App.tsx` also)
   - `/services` - services that we are using in the app, example: we have `firebase.tsx` that configures firebase services.
   - `App.tsx` - app root compomnent for routes pages and url paths.
 
