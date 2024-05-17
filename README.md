@@ -15,7 +15,10 @@ git remote add origin https://github.com/mayNigri/David-Yellin-collaborative-rep
 npm install
 ```
 - Copy `.env` file from the Google Drive.
-- Start react locally `npm start`
+- Start React app locally
+```
+npm start
+```
 
 ## Useful commands
 - `npm start` start react server
