@@ -3,6 +3,7 @@ import { addDoc, collection, getDoc, doc, query, getDocs, limit, deleteDoc, upda
 
 const collectionRef = collection(firestore, "Lessons")
 
+
 const validate = (data) => {
 
     if (typeof (data.title) !== 'string') {
@@ -21,7 +22,6 @@ const validate = (data) => {
 }
 
 const updateValidate = (data) => {
-
     if ('created_at' in data) {
         return "Cant update created time";
     }
@@ -29,8 +29,6 @@ const updateValidate = (data) => {
     if ('updated_at' in data) {
         return "Cant update updated time";
     }
-
-    return true;
 }
 
 const convertDataToLesson = (id, data) => {
@@ -53,7 +51,15 @@ export class Lesson {
     _created_at;
     _updated_at;
 
-    constructor(id, title, description, teacher, created_at, updated_at) {
+    /**
+     * @param {string} id
+     * @param {string} title
+     * @param {string} description
+     * @param {number} created_at
+     * @param {number} updated_at
+     * @param {string} teacher
+     */
+    constructor(id, title, description, teacher, created_at) {
         this._id = id;
         this._title = title;
         this._teacher = teacher;
@@ -67,6 +73,14 @@ export class Lesson {
         // this.rating = 0;
     }
 
+    set title(text) {
+        this._title = text;
+    }
+
+    set description(text) {
+        this._description = text;
+    }
+
     get id() {
         return this._id;
     }
@@ -75,16 +89,26 @@ export class Lesson {
         return this._title;
     }
 
+    get description() {
+        return this._description;
+    }
+
     get teacher() {
         return this._teacher
     }
 
+    /**
+     * @returns {Date}
+     */
     get created_at() {
-        return this._created_at
+        return new Date(this._created_at)
     }
 
+    /**
+     * @returns {Date}
+     */
     get updated_at() {
-        return this._created_at
+        return new Date(this._created_at)
     }
 
     static async createLesson(data) {
@@ -99,6 +123,8 @@ export class Lesson {
             _created_at: Date.now(),
             _updated_at: Date.now()
         });
+
+        return response;
     }
 
     static async listLessons(_limit = 10) {
@@ -112,8 +138,15 @@ export class Lesson {
     static async deleteLessonById(id) {
         const lessonDocRef = doc(firestore, `${collectionRef.path}/${id}`)
         const response = await deleteDoc(lessonDocRef)
+        return response;
     }
 
+    /**
+     * @param {{
+     * title?: string;
+     * description?: string;
+     * }} data
+     */
     static async updateLessonById(id, data) {
 
         // validation
@@ -131,6 +164,19 @@ export class Lesson {
             ...data,
             updated_at: Date.now()
         });
+
+        return response;
+    }
+
+    save() {
+        return Lesson.updateLessonById(this.id, {
+            title: this._title,
+            description: this._description
+        })
+    }
+
+    delete() {
+        return Lesson.deleteLessonById(this.id)
     }
 
     static async getLessonById(id) {
