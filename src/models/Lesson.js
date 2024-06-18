@@ -59,7 +59,7 @@ export class Lesson {
      * @param {number} updated_at
      * @param {string} teacher
      */
-    constructor(id, title, description, teacher, created_at) {
+    constructor(id, title, description, created_at, updated_at, teacher) {
         this._id = id;
         this._title = title;
         this._teacher = teacher;
