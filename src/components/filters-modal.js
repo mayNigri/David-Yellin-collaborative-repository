@@ -1,3 +1,5 @@
+import { classes, hugim, maslulim } from "../constants/lesson-constants";
+
 const FiltersModal = ({
     onDismiss
 }) => {
@@ -8,42 +10,48 @@ const FiltersModal = ({
                 <div className="filters">
                     <div>
                         <h3>חוג</h3>
-                        {
-                            ['שילוב אומנויות', 'חינוך כיתה'].map((hug) => {
-                                return (
-                                    <div className="space-x-1 space-x-reverse">
-                                        <input type="checkbox" />
-                                        <label>{hug}</label>
-                                    </div>
-                                )
-                            })
-                        }
+                        <div className="grid grid-cols-3 gap-2">
+                            {
+                                hugim.map((item) => {
+                                    return (
+                                        <div className="space-x-1 space-x-reverse">
+                                            <input type="checkbox" />
+                                            <label>{item}</label>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                     <div>
                         <h3>מסלול</h3>
-                        {
-                            ['גיל הרך', 'גיל הרך חינוך מיוחד'].map((hug) => {
-                                return (
-                                    <div className="space-x-1 space-x-reverse">
-                                        <input type="checkbox" />
-                                        <label>{hug}</label>
-                                    </div>
-                                )
-                            })
-                        }
+                        <div className="grid grid-cols-3 gap-2">
+                            {
+                                maslulim.map((item) => {
+                                    return (
+                                        <div className="space-x-1 space-x-reverse">
+                                            <input type="checkbox" />
+                                            <label>{item}</label>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                     <div>
                         <h3>כיתה</h3>
-                        {
-                            ['גן', 'כיתה א׳'].map((hug) => {
-                                return (
-                                    <div className="space-x-1 space-x-reverse">
-                                        <input type="checkbox" />
-                                        <label>{hug}</label>
-                                    </div>
-                                )
-                            })
-                        }
+                        <div className="grid grid-cols-3 gap-2">
+                            {
+                                classes.map((item) => {
+                                    return (
+                                        <div className="space-x-1 space-x-reverse">
+                                            <input type="checkbox" />
+                                            <label>{item}</label>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                     <button onClick={() => onDismiss()} className="bg-black p-2 text-white rounded-md w-full">סינון</button>
 
