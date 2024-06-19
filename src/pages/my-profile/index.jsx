@@ -1,7 +1,7 @@
-import { auth } from '../../services/firebase'
+import { auth, firestore } from '../../services/firebase'
 import { updateCurrentUser, UserCredential } from 'firebase/auth'
 import { getDoc, doc, setDoc } from 'firebase/firestore'
-import { Button } from '../../components/ui/Button';
+import { Button } from '../../components/ui/button';
 
 const ProfilePage = () => {
 
@@ -14,7 +14,7 @@ const ProfilePage = () => {
             phoneNumber: "",
         })
 
-        await setDoc(doc(db, "users", auth.currentUser.uid), {
+        await setDoc(doc(firestore, "users", auth.currentUser.uid), {
             name: "",
             college: "",
             course: "",

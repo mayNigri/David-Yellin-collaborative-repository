@@ -33,7 +33,8 @@ function App() {
         })
 
       return () => {
-        listener()
+        if (listener)
+          listener()
       };
     }
   }, [])

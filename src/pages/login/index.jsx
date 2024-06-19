@@ -1,7 +1,7 @@
-import { auth } from '../../services/firebase'
+import { auth, firestore } from '../../services/firebase'
 import { signInWithEmailAndPassword, UserCredential } from 'firebase/auth'
 import { getDoc, doc } from 'firebase/firestore'
-import { Button } from '../../components/ui/Button';
+import { Button } from '../../components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,9 +18,8 @@ const LoginPage = () => {
     });
 
     const login = async ({ email, password }) => {
-        e.preventDefault();
         const { user } = await signInWithEmailAndPassword(auth, email, password);
-        const userDoc = await getDoc(doc(db, "users", user.uid))
+        const userDoc = await getDoc(doc(firestore, "users", user.uid))
     }
 
     return (
