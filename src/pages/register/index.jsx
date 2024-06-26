@@ -16,10 +16,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../../components/ui/select';
+import { useNavigate } from 'react-router-dom';
 
 const validator = z.object({
-    email: z.string().email("Please enter a valid email"),
-    password: z.string().min(8, "Password must be at least 8 characters long"),
+    email: z.string().email("יש להזין אימייל תקין"),
+    password: z.string().min(8, "הסיסמה חייבת להיות באורך של 8 תווים לפחות"),
     fullName: z.string(),
     phone: z.string(),
     college: z.string(),
@@ -33,6 +34,8 @@ const RegisterPage = () => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({
         resolver: zodResolver(validator)
     });
+
+    const navigate = useNavigate();
 
     const onSubmit = async ({ email, password, fullName, phone, college, path, department, year }) => {
         // Create User:
@@ -49,6 +52,9 @@ const RegisterPage = () => {
             department,
             year
         })
+
+        alert("הרשמתך בוצעה בהצלחה");
+        navigate("/login")
     }
 
     return (
@@ -78,7 +84,7 @@ const RegisterPage = () => {
                     <SelectContent>
                         {maslulim.map((item) => {
                             return (
-                                <SelectItem value={item}>{item}</SelectItem>
+                                <SelectItem key={item} value={item}>{item}</SelectItem>
                             )
                         })
                         }
@@ -92,7 +98,7 @@ const RegisterPage = () => {
                     <SelectContent>
                         {hugim.map((item) => {
                             return (
-                                <SelectItem value={item}>{item}</SelectItem>
+                                <SelectItem key={item} value={item}>{item}</SelectItem>
                             )
                         })
                         }
@@ -107,7 +113,7 @@ const RegisterPage = () => {
                     <SelectContent>
                         {classes.map((item) => {
                             return (
-                                <SelectItem value={item}>{item}</SelectItem>
+                                <SelectItem key={item} value={item}>{item}</SelectItem>
                             )
                         })
                         }
