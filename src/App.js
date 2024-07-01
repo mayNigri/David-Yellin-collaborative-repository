@@ -10,7 +10,7 @@ import LessonPage from "./pages/lesson";
 import { browserLocalPersistence } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "./services/firebase";
-import { selectUser, setUser, setUserDoc } from "./redux/auth-slice";
+import { selectUser, selectUserDoc, setUser, setUserDoc } from "./redux/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { getDoc } from "firebase/firestore";
 import AdminPage from "./pages/admin";
@@ -21,6 +21,7 @@ let listener = null;
 
 function App() {
   const user = useSelector(selectUser);
+  const userDoc = useSelector(selectUserDoc);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +59,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Header />}>
-          <Route path="admin" element={<AdminPage />} />
+
           {user ? (
             <>
               <Route path="/" element={<HomePage />} />
@@ -66,6 +67,7 @@ function App() {
               <Route path="lesson/:id" element={<LessonPage />} />
               <Route path="profile" element={<MyProfilePage />} />
               <Route path="*" element={<Navigate to="/" />} />
+              {userDoc.role === "admin" && <Route path="admin" element={<AdminPage />} />}
             </>
           ) : (
             <>

@@ -1,4 +1,4 @@
-import { arrayRemove, arrayUnion, endAt, getDoc, getDocs, limit, orderBy, query, startAt, updateDoc, where } from "firebase/firestore"
+import { addDoc, arrayRemove, arrayUnion, endAt, getDoc, getDocs, limit, orderBy, query, startAt, updateDoc, where } from "firebase/firestore"
 import { lessonsRef, userRef } from "./refs";
 
 export const getMyLessons = async (uid) => {
@@ -47,4 +47,12 @@ export const removeFromFavorites = async (uid, lessonId) => {
     });
 
     return r;
+}
+
+const createLesson = async (uid, input) => {
+    const lessonDoc = await addDoc(lessonsRef, {
+        uid,
+        ...input
+    })
+    return lessonDoc;
 }
