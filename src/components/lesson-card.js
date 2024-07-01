@@ -1,6 +1,9 @@
 import { StarIcon } from "lucide-react";
 
-const LessonCard = ({ lesson }) => {
+const LessonCard = ({ lesson, isFavorite = false }) => {
+
+  const Fav = StarIcon;
+
   return (
     <div className="rounded-md bg-white shadow-md w-96 h-52 p-3">
       <div className="flex flex-row justify-between w-full">
@@ -9,7 +12,7 @@ const LessonCard = ({ lesson }) => {
           <p>{lesson.class || "חוג"}</p>
         </div>
 
-        <StarIcon />
+        <Fav className={`${isFavorite ? 'fill-yellow-300' : 'fill-white'}`} />
       </div>
 
       <div className="mt-5">

@@ -14,6 +14,7 @@ import { selectUser, setUser, setUserDoc } from "./redux/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { doc, getDoc } from "firebase/firestore";
 import AdminPage from "./pages/admin";
+import { userRef } from "./constants/refs";
 
 let init = false;
 let listener = null;
@@ -30,7 +31,7 @@ function App() {
         listener = auth.onAuthStateChanged(
           async (user) => {
             if (user) {
-              const userDoc = await getDoc(doc(firestore, "users", user.uid));
+              const userDoc = await getDoc(userRef(user.uid));
               if (userDoc.exists()) {
                 dispatch(setUserDoc(userDoc.data()));
               }
