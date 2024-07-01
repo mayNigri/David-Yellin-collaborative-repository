@@ -9,10 +9,10 @@ import LessonFormPage from "./pages/lesson-form";
 import LessonPage from "./pages/lesson";
 import { browserLocalPersistence } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth, firestore } from "./services/firebase";
+import { auth } from "./services/firebase";
 import { selectUser, setUser, setUserDoc } from "./redux/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
-import { doc, getDoc } from "firebase/firestore";
+import { getDoc } from "firebase/firestore";
 import AdminPage from "./pages/admin";
 import { userRef } from "./constants/refs";
 
