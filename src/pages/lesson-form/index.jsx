@@ -13,10 +13,10 @@ import { classes, grades, tracks } from "../../constants/lesson-constants";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { useSelector } from "react-redux";
-import {selectUser} from '../../redux/auth-slice'
+import { selectUser } from '../../redux/auth-slice'
 import { addDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import {lessonsRef} from '../../constants/refs'
+import { lessonsRef } from '../../constants/refs'
 
 
 const validator = z.object({
@@ -28,7 +28,7 @@ const validator = z.object({
   fileUrl: z.string().url().optional(),
 });
 
-const LessonFormPage = () => {
+const LessonFormPage = ({ navAfter = true }) => {
 
   const user = useSelector(selectUser);
   const navigate = useNavigate();
@@ -49,9 +49,11 @@ const LessonFormPage = () => {
         ...input
       })
       alert('המערך נוצר בהצלחה')
-      navigate(`/lesson/${lessonDoc.id}`)
+
+      if (navAfter)
+        navigate(`/lesson/${lessonDoc.id}`)
     }
-    catch(e) {
+    catch (e) {
       console.error(e)
       alert('שגיאה ביצירת המערך')
     }

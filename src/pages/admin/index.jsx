@@ -159,7 +159,7 @@ const Admin = () => {
       </Tabs>
 
       <Modal show={showLessonModal} onClose={() => setShowLessonModal(false)}>
-        <LessonForm onSubmit={handleAddLesson} />
+        <LessonForm navAfter={false} onSubmit={handleAddLesson} />
       </Modal>
 
       <Modal show={showUserModal} onClose={() => setShowUserModal(false)}>
