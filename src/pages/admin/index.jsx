@@ -1,4 +1,3 @@
-// src/pages/admin/index.jsx
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../../services/firebase';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
@@ -7,7 +6,8 @@ import 'react-tabs/style/react-tabs.css';
 import './admin.css';
 import Modal from '../../components/lesson-modal'; // Assume both Lesson and User modals are similar
 import LessonForm from '../lesson-form/index.jsx';
-import UserForm from '../register/index.jsx'
+import UserForm from '../register/index.jsx';
+import ConfirmationModal from '../../components/confirmation-modal';
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -16,6 +16,9 @@ const Admin = () => {
   const [newLesson, setNewLesson] = useState({ title: '', description: '' });
   const [showLessonModal, setShowLessonModal] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [confirmationMessage, setConfirmationMessage] = useState('');
+  const [onConfirmAction, setOnConfirmAction] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
@@ -74,6 +77,19 @@ const Admin = () => {
     fetchLessons();
   };
 
+  const openConfirmationModal = (message, onConfirm) => {
+    setConfirmationMessage(message);
+    setOnConfirmAction(() => onConfirm);
+    setShowConfirmationModal(true);
+  };
+
+  const confirmAction = () => {
+    if (onConfirmAction) {
+      onConfirmAction();
+    }
+    setShowConfirmationModal(false);
+  };
+
   return (
     <div className="admin-container">
       <Tabs className="admin-tabs">
@@ -101,7 +117,7 @@ const Admin = () => {
                   <td>{user.name}</td>
                   <td>{user.email}</td>
                   <td className="actions">
-                    <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
+                    <button onClick={() => openConfirmationModal('Are you sure you want to delete this user?', () => handleDeleteUser(user.id))}>Delete</button>
                     <button onClick={() => {
                       setCurrentUser(user);
                       setShowUserModal(true);
@@ -132,7 +148,7 @@ const Admin = () => {
                   <td>{lesson.title}</td>
                   <td>{lesson.description}</td>
                   <td className="actions">
-                    <button onClick={() => handleDeleteLesson(lesson.id)}>Delete</button>
+                    <button onClick={() => openConfirmationModal('Are you sure you want to delete this lesson?', () => handleDeleteLesson(lesson.id))}>Delete</button>
                     <button onClick={() => handleUpdateLesson(lesson.id, { title: 'Updated Title', description: 'Updated Description' })}>Update</button>
                   </td>
                 </tr>
@@ -149,6 +165,13 @@ const Admin = () => {
       <Modal show={showUserModal} onClose={() => setShowUserModal(false)}>
         <UserForm onSubmit={currentUser ? (data) => handleUpdateUser(currentUser.id, data) : handleAddUser} initialData={currentUser} />
       </Modal>
+
+      <ConfirmationModal
+        show={showConfirmationModal}
+        onClose={() => setShowConfirmationModal(false)}
+        onConfirm={confirmAction}
+        message={confirmationMessage}
+      />
     </div>
   );
 };
