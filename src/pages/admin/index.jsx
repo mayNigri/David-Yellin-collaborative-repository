@@ -1,9 +1,162 @@
-const AdminPage = () => {
-    return (
-        <div>
+// src/pages/admin/index.jsx
+import React, { useState, useEffect } from 'react';
+import { firestore } from '../../services/firebase';
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import './admin.css'; // Import the CSS file
 
-        </div>
-    );
-}
+const Admin = () => {
+  const [users, setUsers] = useState([]);
+  const [lessons, setLessons] = useState([]);
+  const [newUser, setNewUser] = useState({ name: '', email: '' });
+  const [newLesson, setNewLesson] = useState({ title: '', description: '' });
 
-export default AdminPage;
+  useEffect(() => {
+    fetchUsers();
+    fetchLessons();
+  }, []);
+
+  const fetchUsers = async () => {
+    const usersCollection = collection(firestore, 'users');
+    const usersSnapshot = await getDocs(usersCollection);
+    setUsers(usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  };
+
+  const fetchLessons = async () => {
+    const lessonsCollection = collection(firestore, 'lessons');
+    const lessonsSnapshot = await getDocs(lessonsCollection);
+    setLessons(lessonsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  };
+
+  const handleAddUser = async () => {
+    const usersCollection = collection(firestore, 'users');
+    await addDoc(usersCollection, newUser);
+    fetchUsers();
+    setNewUser({ name: '', email: '' });
+  };
+
+  const handleAddLesson = async () => {
+    const lessonsCollection = collection(firestore, 'lessons');
+    await addDoc(lessonsCollection, newLesson);
+    fetchLessons();
+    setNewLesson({ title: '', description: '' });
+  };
+
+  const handleDeleteUser = async (id) => {
+    const userDoc = doc(firestore, 'users', id);
+    await deleteDoc(userDoc);
+    fetchUsers();
+  };
+
+  const handleDeleteLesson = async (id) => {
+    const lessonDoc = doc(firestore, 'lessons', id);
+    await deleteDoc(lessonDoc);
+    fetchLessons();
+  };
+
+  const handleUpdateUser = async (id, updatedUser) => {
+    const userDoc = doc(firestore, 'users', id);
+    await updateDoc(userDoc, updatedUser);
+    fetchUsers();
+  };
+
+  const handleUpdateLesson = async (id, updatedLesson) => {
+    const lessonDoc = doc(firestore, 'lessons', id);
+    await updateDoc(lessonDoc, updatedLesson);
+    fetchLessons();
+  };
+
+  return (
+    <div className="admin-container">
+      <Tabs className="admin-tabs">
+        <TabList>
+          <Tab>Users</Tab>
+          <Tab>Lessons</Tab>
+        </TabList>
+
+        <TabPanel>
+          <h2>Users</h2>
+          <div className="admin-inputs">
+            <input
+              type="text"
+              placeholder="Name"
+              value={newUser.name}
+              onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={newUser.email}
+              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+            />
+            <button onClick={handleAddUser}>Add User</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td className="actions">
+                    <button onClick={() => handleDeleteUser(user.id)}>Delete</button>
+                    <button onClick={() => handleUpdateUser(user.id, { name: 'Updated Name', email: 'updated@example.com' })}>Update</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TabPanel>
+
+        <TabPanel>
+          <h2>Lessons</h2>
+          <div className="admin-inputs">
+            <input
+              type="text"
+              placeholder="Title"
+              value={newLesson.title}
+              onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Description"
+              value={newLesson.description}
+              onChange={(e) => setNewLesson({ ...newLesson, description: e.target.value })}
+            />
+            <button onClick={handleAddLesson}>Add Lesson</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lessons.map((lesson) => (
+                <tr key={lesson.id}>
+                  <td>{lesson.title}</td>
+                  <td>{lesson.description}</td>
+                  <td className="actions">
+                    <button onClick={() => handleDeleteLesson(lesson.id)}>Delete</button>
+                    <button onClick={() => handleUpdateLesson(lesson.id, { title: 'Updated Title', description: 'Updated Description' })}>Update</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TabPanel>
+      </Tabs>
+    </div>
+  );
+};
+
+export default Admin;
