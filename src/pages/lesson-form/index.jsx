@@ -9,19 +9,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { classes, hugim, maslulim } from "../../constants/lesson-constants";
+import { classes, grades, tracks } from "../../constants/lesson-constants";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { useSelector } from "react-redux";
 import {selectUser} from '../../redux/auth-slice'
-import { addDoc, collection } from "firebase/firestore";
-import {firestore} from '../../services/firebase'
+import { addDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import {lessonsRef} from '../../constants/refs'
+
 
 const validator = z.object({
-  path: z.enum(maslulim),
-  department: z.enum(hugim),
-  year: z.enum(classes),
+  track: z.enum(tracks),
+  class: z.enum(classes),
+  grade: z.enum(grades),
   description: z.string(),
   name: z.string(),
   fileUrl: z.string().url().optional(),
@@ -43,7 +44,7 @@ const LessonFormPage = () => {
 
   const onSubmit = async (input) => {
     try {
-      const lessonDoc = await addDoc(collection(firestore, "lessons"), {
+      const lessonDoc = await addDoc(lessonsRef, {
         uid: user.uid,
         ...input
       })
@@ -66,34 +67,34 @@ const LessonFormPage = () => {
         <Label>שם המערך</Label>
         <Input type="text" placeholder="שם המערך" {...register("name")} />
         <Label>מסלול</Label>
-        <Select onValueChange={(val) => setValue("path", val)}>
+        <Select onValueChange={(val) => setValue("track", val)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="אנא בחר" />
           </SelectTrigger>
           <SelectContent>
-            {maslulim.map((item) => {
+            {tracks.map((item) => {
               return <SelectItem key={item} value={item}>{item}</SelectItem>;
             })}
           </SelectContent>
         </Select>
-        <Label htmlFor="hug">חוג</Label>
-        <Select id="hug" onValueChange={(val) => setValue("department", val)}>
+        <Label htmlFor="class">חוג</Label>
+        <Select onValueChange={(val) => setValue("class", val)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue className="w-full" placeholder="אנא בחר" />
           </SelectTrigger>
           <SelectContent>
-            {hugim.map((item) => {
+            {classes.map((item) => {
               return <SelectItem key={item} value={item}>{item}</SelectItem>;
             })}
           </SelectContent>
         </Select>
         <Label>כיתה</Label>
-        <Select onValueChange={(val) => setValue("year", val)}>
+        <Select onValueChange={(val) => setValue("grade", val)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="אנא בחר" />
           </SelectTrigger>
           <SelectContent>
-            {classes.map((item) => {
+            {grades.map((item) => {
               return <SelectItem key={item} value={item}>{item}</SelectItem>;
             })}
           </SelectContent>

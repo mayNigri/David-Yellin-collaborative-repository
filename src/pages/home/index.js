@@ -1,4 +1,12 @@
-import { getDoc, doc } from "firebase/firestore";
+import {
+  getDoc,
+  doc,
+  getDocs,
+  collection,
+  query,
+  limit,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { firestore } from "../../services/firebase";
 import { Lesson } from "../../models/Lesson";
@@ -9,10 +17,25 @@ import { selectUser, selectUserDoc } from "../../redux/auth-slice";
 import { Button, buttonVariants } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { lessonsRef } from "../../constants/refs";
 const HomePage = () => {
   const [showFilters, setShowFilters] = useState(false);
-
   const user = useSelector(selectUserDoc);
+
+  const [lessons, setLessons] = useState([]);
+  const [filters, setFilters] = useState({
+    departments: [],
+    years: [],
+    paths: [],
+  });
+
+  useEffect(() => {
+    const q = query(lessonsRef, limit(5));
+    getDocs(q).then((querySnapshot) => {
+      setLessons(querySnapshot.docs.map((d) => d.data()));
+    });
+  }, []);
+
   return (
     <div>
       <h1>דף הבית</h1>
@@ -47,31 +70,19 @@ const HomePage = () => {
         </div>
 
         <div className="grid grid-cols-3 gap-3">
-          <a href="/lesson/1">
-            <LessonCard />
-          </a>
-          <a href="/lesson/1">
-            <LessonCard />
-          </a>
-          <a href="/lesson/1">
-            <LessonCard />
-          </a>
-          <a href="/lesson/1">
-            <LessonCard />
-          </a>
-          <a href="/lesson/1">
-            <LessonCard />
-          </a>
-          <a href="/lesson/1">
-            <LessonCard />
-          </a>
-          <a href="/lesson/1">
-            <LessonCard />
-          </a>
+          {lessons.map((lesson) => (
+            <a href="/lesson/1">
+              <LessonCard lesson={lesson} />
+            </a>
+          ))}
         </div>
 
         {showFilters && (
-          <FiltersModal onDismiss={() => setShowFilters(false)} />
+          <FiltersModal
+            onSubmit={null}
+            filters={filters}
+            onDismiss={() => setShowFilters(false)}
+          />
         )}
       </div>
     </div>

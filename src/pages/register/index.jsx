@@ -6,7 +6,7 @@ import { Button } from '../../components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { classes, hugim, maslulim } from '../../constants/lesson-constants';
+import { classes, grades, tracks } from '../../constants/lesson-constants';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import {
@@ -24,9 +24,9 @@ const validator = z.object({
     fullName: z.string(),
     phone: z.string(),
     college: z.string(),
-    path: z.enum(maslulim),
-    department: z.enum(hugim),
-    year: z.enum(classes)
+    track: z.enum(tracks),
+    class: z.enum(classes),
+    year: z.number().int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
 })
 
 const RegisterPage = () => {
@@ -76,13 +76,13 @@ const RegisterPage = () => {
                 <Label htmlFor="college">מכללה</Label>
                 <Input {...register("college", { required: true })} type="text" placeholder="מכללה" />
 
-                <Label htmlFor="path">מסלול</Label>
-                <Select onValueChange={(val) => setValue('path', val)}>
+                <Label htmlFor="track">מסלול</Label>
+                <Select onValueChange={(val) => setValue('track', val)}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="אנא בחר" />
                     </SelectTrigger>
                     <SelectContent>
-                        {maslulim.map((item) => {
+                        {tracks.map((item) => {
                             return (
                                 <SelectItem key={item} value={item}>{item}</SelectItem>
                             )
@@ -90,23 +90,8 @@ const RegisterPage = () => {
                         }
                     </SelectContent>
                 </Select>
-                <Label htmlFor="department">חוג</Label>
-                <Select onValueChange={(val) => setValue('department', val)}>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="אנא בחר" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {hugim.map((item) => {
-                            return (
-                                <SelectItem key={item} value={item}>{item}</SelectItem>
-                            )
-                        })
-                        }
-                    </SelectContent>
-                </Select>
-
-                <Label htmlFor="year">שנה</Label>
-                <Select onValueChange={(val) => setValue('year', val)}>
+                <Label htmlFor="class">חוג</Label>
+                <Select onValueChange={(val) => setValue('class', val)}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="אנא בחר" />
                     </SelectTrigger>
@@ -119,6 +104,9 @@ const RegisterPage = () => {
                         }
                     </SelectContent>
                 </Select>
+
+                <Label htmlFor="year">שנה אקדמית</Label>
+                <Input {...register("year", { required: true, setValueAs(val) {return Number(val)} })} type="number" placeholder="שנה אקדמית" />
                 <div className="flex flex-col items-center w-full">
                     <Button className="bg-black p-2 text-white rounded-md w-full">הרשמה</Button>
                     <p>או</p>

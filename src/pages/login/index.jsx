@@ -1,5 +1,5 @@
-import { auth, firestore } from '../../services/firebase'
-import { signInWithEmailAndPassword, UserCredential } from 'firebase/auth'
+import { auth } from '../../services/firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import { getDoc, doc } from 'firebase/firestore'
 import { Button } from '../../components/ui/button';
 import { useForm } from 'react-hook-form';
