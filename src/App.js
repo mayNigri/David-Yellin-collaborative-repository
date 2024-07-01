@@ -13,6 +13,7 @@ import { auth, firestore } from "./services/firebase";
 import { selectUser, setUser, setUserDoc } from "./redux/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { doc, getDoc } from "firebase/firestore";
+import AdminPage from "./pages/admin";
 
 let init = false;
 let listener = null;
@@ -56,6 +57,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Header />}>
+          <Route path="admin" element={<AdminPage />} />
           {user ? (
             <>
               <Route path="/" element={<HomePage />} />

@@ -1,23 +1,19 @@
 import {
-  getDoc,
-  doc,
   getDocs,
-  collection,
   query,
   limit,
-  where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { firestore } from "../../services/firebase";
-import { Lesson } from "../../models/Lesson";
 import LessonCard from "../../components/lesson-card";
 import FiltersModal from "../../components/filters-modal";
 import { useSelector } from "react-redux";
-import { selectUser, selectUserDoc } from "../../redux/auth-slice";
+import { selectUserDoc } from "../../redux/auth-slice";
 import { Button, buttonVariants } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { lessonsRef } from "../../constants/refs";
+import { Link } from "react-router-dom";
+import { getMyLessons } from "../../constants/lesson-actions";
 const HomePage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const user = useSelector(selectUserDoc);
@@ -32,9 +28,18 @@ const HomePage = () => {
   useEffect(() => {
     const q = query(lessonsRef, limit(5));
     getDocs(q).then((querySnapshot) => {
-      setLessons(querySnapshot.docs.map((d) => d.data()));
+      setLessons(querySnapshot.docs.map((d) =>
+      ({
+        ...d.data(),
+        id: d.id
+      })));
     });
   }, []);
+
+  const handleGetMyLessons = async () => {
+    const docs = await getMyLessons(user.id);
+    setLessons(docs)
+  }
 
   return (
     <div>
@@ -59,21 +64,22 @@ const HomePage = () => {
             </Button>
           </div>
 
-          <div>
-            <a
+          <div className="flex gap-2">
+            <Button onClick={handleGetMyLessons}>המערכים שלי</Button>
+            <Link
               className={buttonVariants({ variant: "default" })}
-              href="/lesson"
+              to="/lesson"
             >
               יצירת מערך שיעור
-            </a>
+            </Link>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-3">
           {lessons.map((lesson) => (
-            <a href="/lesson/1">
+            <Link to={`/lesson/${lesson.id}`}>
               <LessonCard lesson={lesson} />
-            </a>
+            </Link>
           ))}
         </div>
 
