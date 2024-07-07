@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, } from "react-router-dom";
 import LoginPage from "./pages/login";
 import HomePage from "./pages/home";
 import MyProfilePage from "./pages/my-profile";
@@ -56,29 +56,31 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Header />}>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Header />}>
 
-          {user ? (
-            <>
-              <Route path="/" element={<HomePage />} />
-              <Route path="lesson" element={<LessonFormPage />} />
-              <Route path="lesson/:id" element={<LessonPage />} />
-              <Route path="profile" element={<MyProfilePage />} />
-              <Route path="*" element={<Navigate to="/" />} />
-              {userDoc.role === "admin" && <Route path="admin" element={<AdminPage />} />}
-            </>
-          ) : (
-            <>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="register" element={<RegisterPage />} />
-            </>
-          )}
-        </Route>
-      </Routes>
-    </BrowserRouter>
+            {user ? (
+              <>
+                <Route path="/" element={<HomePage />} />
+                <Route path="lesson" element={<LessonFormPage />} />
+                <Route path="lesson/:id" element={<LessonPage />} />
+                <Route path="profile" element={<MyProfilePage />} />
+                <Route path="*" element={<Navigate to="/" />} />
+                {userDoc.role === "admin" && <Route path="admin" element={<AdminPage />} />}
+              </>
+            ) : (
+              <>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="register" element={<RegisterPage />} />
+              </>
+            )}
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 
