@@ -72,9 +72,11 @@ const RegisterPage = () => {
 
     const navigate = useNavigate();
     const [firebaseError, setfirebaseError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = async ({ email, password, fullName, phone, college, path, department, year }) => {
         // Create User:
+        setLoading(true)
         setfirebaseError(null);
         try {
         const { user } = await createUserWithEmailAndPassword(auth, email, password)
@@ -92,13 +94,14 @@ const RegisterPage = () => {
         })
         alert("הרשמתך בוצעה בהצלחה");
         navigate("/login")
-
         }
         catch(e) {
             setfirebaseError({
                 message: errorCodes[e.code] || "שגיאה בעת הרשמה"
             });
         }
+
+        setLoading(false)
 
     }
 
@@ -174,7 +177,7 @@ const RegisterPage = () => {
                 </div>
                 
                 <div className="flex flex-col items-center w-full">
-                    <Button type="submit" className="bg-black p-2 text-white rounded-md w-full">הרשמה</Button>
+                    <Button loading={loading} type="submit" className="bg-black p-2 text-white rounded-md w-full">הרשמה</Button>
                 </div>
 
                 <div>

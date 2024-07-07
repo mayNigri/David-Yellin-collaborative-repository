@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Navigate, Route, Routes, } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/login";
 import HomePage from "./pages/home";
 import MyProfilePage from "./pages/my-profile";
@@ -10,11 +10,17 @@ import LessonPage from "./pages/lesson";
 import { browserLocalPersistence } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "./services/firebase";
-import { selectUser, selectUserDoc, setUser, setUserDoc } from "./redux/auth-slice";
+import {
+  selectUser,
+  selectUserDoc,
+  setUser,
+  setUserDoc,
+} from "./redux/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { getDoc } from "firebase/firestore";
 import AdminPage from "./pages/admin";
 import { userRef } from "./constants/refs";
+import { CircleDashed as LoadingIndicator } from "lucide-react";
 
 let init = false;
 let listener = null;
@@ -52,15 +58,18 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-screen h-screen flex items-center justify-center">
+        <LoadingIndicator className="animate-spin delay-100" />
+      </div>
+    );
   }
 
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Header />}>
-
+          <Route path="/" element={user ? <Header /> : undefined}>
             {user ? (
               <>
                 <Route path="/" element={<HomePage />} />
@@ -68,7 +77,9 @@ function App() {
                 <Route path="lesson/:id" element={<LessonPage />} />
                 <Route path="profile" element={<MyProfilePage />} />
                 <Route path="*" element={<Navigate to="/" />} />
-                {userDoc.role === "admin" && <Route path="admin" element={<AdminPage />} />}
+                {userDoc.role === "admin" && (
+                  <Route path="admin" element={<AdminPage />} />
+                )}
               </>
             ) : (
               <>

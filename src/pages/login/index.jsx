@@ -10,6 +10,7 @@ import { Label } from '../../components/ui/label';
 import { COLOR_WHITE , COLOR_YELLOW , COLOR_BLUE} from '../../lib/utils'
 import logo_blue from '../../lib/logo_blue.png'
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const validator = z.object({
     email: z.string().email("יש להזין אימייל תקין"),
@@ -31,17 +32,21 @@ const WavyLine = () => (
 
 const LoginPage = () => {
 
+    const [loading, setLoading] = useState(false);
+
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(validator)
     });
 
     const login = async ({ email, password }) => {
         try {
+            setLoading(true)
             await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
             console.log(error.message)
             alert("התרחשה שגיאה בעת התחברות, נסה שוב")
         }
+        setLoading(false);
     }
 
     return (
@@ -62,7 +67,7 @@ const LoginPage = () => {
                 </div>
                 
                 <div className="flex flex-row space-x-reverse space-x-2 items-center">
-                    <Button className="bg-black p-2 text-white rounded-md">התחברות</Button>
+                    <Button loading={loading} className="bg-black p-2 text-white rounded-md">התחברות</Button>
                     <Link className="text-blue-500 hover:text-blue-700" to="/register">הרשמה</Link>
                 </div>
                 </form>

@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { lessonRef, lessonsRef } from '../../constants/refs'
 import { uploadFileAndGetUrl } from "../../services/firebase";
 import { useState } from "react";
-
+import LoadingIndicator from "../../components/loading-indicator";
 
 const validator = z.object({
   track: z.enum(tracks),
@@ -35,6 +35,7 @@ const LessonFormPage = ({ navAfter = true }) => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false)
 
   const {
     register,
@@ -46,6 +47,8 @@ const LessonFormPage = ({ navAfter = true }) => {
   });
 
   const onSubmit = async (input) => {
+
+    setLoading(true)
     try {
 
       const lessonDoc = await addDoc(lessonsRef, {
@@ -66,6 +69,8 @@ const LessonFormPage = ({ navAfter = true }) => {
       console.error(e)
       alert('שגיאה ביצירת המערך')
     }
+
+    setLoading(false)
   };
 
   return (
@@ -119,7 +124,7 @@ const LessonFormPage = ({ navAfter = true }) => {
           setFile(e.target.files[0] || null);
         }} />
 
-        <Button type="submit" className="bg-black p-2 text-white rounded-md">יצירה</Button>
+        <Button loading={loading} type="submit" className="bg-black p-2 text-white rounded-md">יצירה</Button>
       </form>
     </div>
   );

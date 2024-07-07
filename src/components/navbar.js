@@ -54,8 +54,8 @@ const NavBar = () => {
             </Link>
           )}
           <Link to="" className={buttonVariants({ variant: "ghost" })}>
-              <Bell />
-            </Link>
+            <Bell />
+          </Link>
           <Button onClick={() => signOut(auth)} variant="destructive">
             התנתקות
           </Button>

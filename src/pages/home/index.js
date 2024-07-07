@@ -41,8 +41,9 @@ const validator = z.object({
 });
 
 const HomePage = () => {
-  const [showFilters, setShowFilters] = useState(false);
+  const [searching, setIsSearching] = useState(false);
   const user = useSelector(selectUserDoc);
+
   const searchForm = useForm({
     resolver: zodResolver(validator),
   });
@@ -81,9 +82,12 @@ const HomePage = () => {
   };
 
   const handleGetLessonsByFilter = async (input) => {
-    console.log(input);
-    const docs = await getLessonsByFilter(input);
-    setLessons(docs);
+    setIsSearching(true);
+    try {
+      const docs = await getLessonsByFilter(input);
+      setLessons(docs);
+    } catch (e) {}
+    setIsSearching(false);
   };
 
   return (
@@ -155,7 +159,11 @@ const HomePage = () => {
                 })}
               </SelectContent>
             </Select>
-            <Button type="submit" className="p-2 text-white rounded-md">
+            <Button
+              loading={searching}
+              type="submit"
+              className="p-2 text-white rounded-md"
+            >
               חיפוש
             </Button>
           </form>

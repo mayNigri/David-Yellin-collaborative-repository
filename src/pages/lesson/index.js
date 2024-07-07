@@ -76,16 +76,18 @@ const LessonPage = () => {
 
       <div>{lesson.description}</div>
 
-      <div>
-        <a
-          href={lesson.fileUrl}
-          download={lesson.fileUrl.split("/").pop()}
-          target="_blank"
-          className="bg-black p-2 text-white rounded-md"
-        >
-          הורדת שיעור
-        </a>
-      </div>
+      {lesson.fileUrl && (
+        <div>
+          <a
+            href={lesson.fileUrl}
+            download={lesson.fileUrl.split("/").pop()}
+            target="_blank"
+            className="bg-black p-2 text-white rounded-md"
+          >
+            הורדת שיעור
+          </a>
+        </div>
+      )}
 
       <div className="mt-5 flex flex-col items-start">
         <h2>תגובות</h2>
