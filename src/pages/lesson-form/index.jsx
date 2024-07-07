@@ -14,9 +14,11 @@ import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { useSelector } from "react-redux";
 import { selectUser } from '../../redux/auth-slice'
-import { addDoc } from "firebase/firestore";
+import { addDoc, updateDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { lessonsRef } from '../../constants/refs'
+import { lessonRef, lessonsRef } from '../../constants/refs'
+import { uploadFileAndGetUrl } from "../../services/firebase";
+import { useState } from "react";
 
 
 const validator = z.object({
@@ -32,6 +34,7 @@ const LessonFormPage = ({ navAfter = true }) => {
 
   const user = useSelector(selectUser);
   const navigate = useNavigate();
+  const [file, setFile] = useState(null);
 
   const {
     register,
@@ -44,10 +47,16 @@ const LessonFormPage = ({ navAfter = true }) => {
 
   const onSubmit = async (input) => {
     try {
+
       const lessonDoc = await addDoc(lessonsRef, {
         uid: user.uid,
         ...input
-      })
+      });
+
+      const url = await uploadFileAndGetUrl(file, `/lessons/${user.uid}/${lessonDoc.id}.${file.name}`);
+
+      await updateDoc(lessonRef(lessonDoc.id), { fileUrl: url })
+
       alert('המערך נוצר בהצלחה')
 
       if (navAfter)
@@ -106,7 +115,9 @@ const LessonFormPage = ({ navAfter = true }) => {
         <Input type="text" placeholder="טקסט חופשי" {...register("description")} />
 
         <Label>העלאת קובץ המערך</Label>
-        <input type="file" />
+        <input type="file" onChange={async (e) => {
+          setFile(e.target.files[0] || null);
+        }} />
 
         <Button type="submit" className="bg-black p-2 text-white rounded-md">יצירה</Button>
       </form>

@@ -5,7 +5,10 @@ import { useParams } from "react-router-dom";
 import { lessonRef, userRef } from "../../constants/refs";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserDoc, setUserDoc } from "../../redux/auth-slice";
-import { addToFavorites, removeFromFavorites } from "../../constants/lesson-actions";
+import {
+  addToFavorites,
+  removeFromFavorites,
+} from "../../constants/lesson-actions";
 
 const LessonPage = () => {
   const lessonId = useParams().id;
@@ -15,7 +18,7 @@ const LessonPage = () => {
   const [error, setError] = useState();
 
   const user = useSelector(selectUserDoc);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setError(null);
@@ -29,12 +32,14 @@ const LessonPage = () => {
   }, [lessonId]);
 
   const handleAddOrRemoveFavorite = async () => {
-    const prom = await (isFavorite ? removeFromFavorites(user.id, lessonId) : addToFavorites(user.id, lessonId));
+    const prom = await (isFavorite
+      ? removeFromFavorites(user.id, lessonId)
+      : addToFavorites(user.id, lessonId));
     const userDoc = await getDoc(userRef(user.id));
     if (userDoc.exists()) {
       dispatch(setUserDoc(userDoc.data()));
     }
-  }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -52,7 +57,7 @@ const LessonPage = () => {
       <div className="flex gap-10 items-center ">
         <h1>{lesson.name}</h1>
         <button onClick={handleAddOrRemoveFavorite}>
-          <Fav className={`${isFavorite ? 'fill-yellow-300' : 'fill-white'}`} />
+          <Fav className={`${isFavorite ? "fill-yellow-300" : "fill-white"}`} />
         </button>
       </div>
       <div>
@@ -72,9 +77,14 @@ const LessonPage = () => {
       <div>{lesson.description}</div>
 
       <div>
-        <button className="bg-black p-2 text-white rounded-md">
+        <a
+          href={lesson.fileUrl}
+          download={lesson.fileUrl.split("/").pop()}
+          target="_blank"
+          className="bg-black p-2 text-white rounded-md"
+        >
           הורדת שיעור
-        </button>
+        </a>
       </div>
 
       <div className="mt-5 flex flex-col items-start">

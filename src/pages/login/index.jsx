@@ -45,7 +45,7 @@ const LoginPage = () => {
     }
 
     return (
-        <div className="flex w-full min-h-screen flex items-center justify-center" style={{ backgroundColor: COLOR_WHITE }}>
+        <div className="w-full min-h-screen flex items-center justify-center" style={{ backgroundColor: COLOR_WHITE }}>
 
             <div className="min-h-screen flex items-center justify-center w-1/2 flex-col space-y-2" style={{ backgroundColor: COLOR_WHITE }}>
                 <h1 className="text-3xl font-bold py-5">התחברות</h1>
