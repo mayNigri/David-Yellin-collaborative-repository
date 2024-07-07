@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { classes, grades, tracks } from '../../constants/lesson-constants';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
+import { COLOR_WHITE , COLOR_YELLOW , COLOR_BLUE} from '../../lib/utils'
 import {
     Select,
     SelectContent,
@@ -16,18 +17,52 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../../components/ui/select';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import logo_blue from '../../lib/logo_blue.png'
+import { useState } from 'react';
 
 const validator = z.object({
-    email: z.string().email("יש להזין אימייל תקין"),
-    password: z.string().min(8, "הסיסמה חייבת להיות באורך של 8 תווים לפחות"),
-    fullName: z.string(),
-    phone: z.string(),
-    college: z.string(),
-    track: z.enum(tracks),
-    class: z.enum(classes),
-    year: z.number().int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
+    email: z.string({
+        required_error: "יש להזין אימייל"
+    }).email("יש להזין אימייל תקין"),
+    password: z.string({
+        required_error: "יש להזין סיסמה"
+    }).min(8, "הסיסמה חייבת להיות באורך של 8 תווים לפחות"),
+    fullName: z.string({
+        required_error: "יש להזין שם מלא"
+    }),
+    phone: z.string({
+        required_error: "יש להזין מספר טלפון"
+    }).regex(/^05\d{8}$/, "מספר טלפון חייב להיות באורך של 10 ספרות"),
+    college: z.string({
+        required_error: "יש להזין מכללה"
+    }),
+    track: z.enum(tracks, {required_error: "יש לבחור מסלול"}),
+    class: z.enum(classes, {required_error: "יש לבחור חוג"}),
+    year: z.number({
+        required_error: "יש להזין שנה אקדמית"
+    }).int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
 })
+
+const WavyLine = () => (
+    <svg
+    height="100%"
+    width="20"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 10 200"
+    preserveAspectRatio="none"
+    style={{ fill: 'none', stroke: COLOR_YELLOW, strokeWidth: 4 }}
+  >
+    <path d="M10 0 C 15 500, 5 50, 10 1000 C 15 1500, 5 1500, 10 2000" />
+  </svg>
+  )
+
+
+  const errorCodes = {
+    ['auth/email-already-in-use']: "האימייל כבר קיים במערכת",
+    ['auth/phone-number-already-exists']: "מספר הטלפון כבר קיים במערכת",
+  }
+
 
 const RegisterPage = () => {
 
@@ -36,9 +71,12 @@ const RegisterPage = () => {
     });
 
     const navigate = useNavigate();
+    const [firebaseError, setfirebaseError] = useState(null);
 
     const onSubmit = async ({ email, password, fullName, phone, college, path, department, year }) => {
         // Create User:
+        setfirebaseError(null);
+        try {
         const { user } = await createUserWithEmailAndPassword(auth, email, password)
 
         // Save User Information In Firestore
@@ -52,30 +90,51 @@ const RegisterPage = () => {
             department,
             year
         })
-
         alert("הרשמתך בוצעה בהצלחה");
         navigate("/login")
+
+        }
+        catch(e) {
+            setfirebaseError({
+                message: errorCodes[e.code] || "שגיאה בעת הרשמה"
+            });
+        }
+
     }
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold">הרשמה</h1>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-start max-w-[300px]">
+        <div className="flex w-full min-h-screen flex items-center justify-center" style={{ backgroundColor: COLOR_WHITE }}>
+
+            <div className="min-h-screen flex items-center justify-center w-1/2 flex-col" style={{ backgroundColor: COLOR_WHITE }}>
+                <h1 className="text-3xl font-bold py-5">הרשמה</h1>
+                <form onSubmit={handleSubmit(onSubmit)} className="items-start max-w-[400px] grid-cols-2 grid gap-5 justify-center">
+                <div>
                 <Label htmlFor="fullName">שם מלא</Label>
                 <Input {...register("fullName", { required: true })} type="text" placeholder="שם מלא" />
+                </div>
 
+                <div>
                 <Label htmlFor="email">אימייל</Label>
                 <Input {...register("email", { required: true })} type="text" placeholder="אימייל" />
+                </div>
 
+
+                <div>
                 <Label htmlFor="phone">מספר טלפון</Label>
                 <Input {...register("phone", { required: true })} type="text" placeholder="מספר טלפון" />
+                </div>
 
+                <div>
                 <Label htmlFor="password">סיסמה</Label>
                 <Input {...register("password", { required: true })} type="password" placeholder="סיסמא" />
+                </div>
 
+                <div>
                 <Label htmlFor="college">מכללה</Label>
                 <Input {...register("college", { required: true })} type="text" placeholder="מכללה" />
+                </div>
 
+                <div>
                 <Label htmlFor="track">מסלול</Label>
                 <Select onValueChange={(val) => setValue('track', val)}>
                     <SelectTrigger className="w-[180px]">
@@ -90,6 +149,9 @@ const RegisterPage = () => {
                         }
                     </SelectContent>
                 </Select>
+                </div>
+
+                <div>
                 <Label htmlFor="class">חוג</Label>
                 <Select onValueChange={(val) => setValue('class', val)}>
                     <SelectTrigger className="w-[180px]">
@@ -104,15 +166,36 @@ const RegisterPage = () => {
                         }
                     </SelectContent>
                 </Select>
-
-                <Label htmlFor="year">שנה אקדמית</Label>
-                <Input {...register("year", { required: true, setValueAs(val) {return Number(val)} })} type="number" placeholder="שנה אקדמית" />
+                </div>
+            
+                <div>
+                    <Label htmlFor="year">שנה אקדמית</Label>
+                    <Input {...register("year", { required: true, setValueAs(val) {return Number(val)} })} type="number" placeholder="שנה אקדמית" />
+                </div>
+                
                 <div className="flex flex-col items-center w-full">
-                    <Button className="bg-black p-2 text-white rounded-md w-full">הרשמה</Button>
-                    <p>או</p>
-                    <a href="/login">התחברו</a>
+                    <Button type="submit" className="bg-black p-2 text-white rounded-md w-full">הרשמה</Button>
+                </div>
+
+                <div>
+                    משתמש קיים? <Link className='text-blue-500 hover:text-blue-700' to="/login">התחברו</Link>
                 </div>
             </form>
+            {Object.keys(errors).concat(firebaseError ? [firebaseError] : []).length > 0 && <div className='text-red-500 my-5'>
+                {Object.keys(errors).map((err) => {
+                    if(errors[err].message) return <p className='list-item'>{errors[err].message}</p>
+                })}
+                {firebaseError && <p className='list-item'>{firebaseError.message}</p>}
+            </div>}
+            </div>
+            <div className="wavy-line-container flex justify-center items-center h-full" style={{ height: '100%' }}>
+                <WavyLine />
+            </div>
+
+            <div className='flex justify-center w-1/2'>
+                <img src={logo_blue} alt="logo_blue" />
+            </div>
+            
         </div>
     )
 }
