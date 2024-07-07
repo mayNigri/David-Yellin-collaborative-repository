@@ -1,6 +1,13 @@
 
+:root {
+  --color-white: #EFEFEF;
+  --color-yellow: #FCCA46;
+  --color-blue: #03044F;
+}
+
 .admin-container {
     padding: 20px;
+    background-color: var(--color-white);
   }
   
   .admin-tabs {
