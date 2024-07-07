@@ -48,12 +48,14 @@ const NavBar = () => {
       </ul>
       {user && (
         <div className="gap-3 flex items-center">
-          <Bell />
           {userDoc.role === "admin" && (
             <Link to="/admin" className={buttonVariants({ variant: "ghost" })}>
               פאנל ניהול
             </Link>
           )}
+          <Link to="" className={buttonVariants({ variant: "ghost" })}>
+              <Bell />
+            </Link>
           <Button onClick={() => signOut(auth)} variant="destructive">
             התנתקות
           </Button>
