@@ -96,6 +96,8 @@ const Admin = () => {
         <TabList>
           <Tab>Users</Tab>
           <Tab>Lessons</Tab>
+          <Tab>Reports</Tab>
+
         </TabList>
 
         <TabPanel>
@@ -155,6 +157,10 @@ const Admin = () => {
               ))}
             </tbody>
           </table>
+        </TabPanel>
+
+        <TabPanel>
+          <h2>Reports</h2>
         </TabPanel>
       </Tabs>
 
