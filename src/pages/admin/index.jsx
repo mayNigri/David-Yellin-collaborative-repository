@@ -162,6 +162,13 @@ const Admin = () => {
             <thead>
               <tr>
                 <th>Title</th>
+                <th>Class</th>
+                <th>Created At</th>
+                <th>Grade</th>
+                <th>Name</th>
+                <th>Track</th>
+                <th>U-id</th>
+                <th>Updated AT</th>
                 <th>Description</th>
                 <th>Actions</th>
               </tr>
@@ -170,6 +177,13 @@ const Admin = () => {
               {lessons.map((lesson) => (
                 <tr key={lesson.id}>
                   <td>{lesson.title}</td>
+                  <td>{lesson.class}</td>
+                  <td>{lesson.createdAt}</td>
+                  <td>{lesson.grade}</td>
+                  <td>{lesson.name}</td>
+                  <td>{lesson.track}</td>
+                  <td>{lesson.uid}</td>
+                  <td>{lesson.updatedAt}</td>
                   <td>{lesson.description}</td>
                   <td className="actions">
                     <button onClick={() => openConfirmationModal('Are you sure you want to delete this lesson?', () => handleDeleteLesson(lesson.id))}>Delete</button>
