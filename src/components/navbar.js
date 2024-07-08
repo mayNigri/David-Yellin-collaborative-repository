@@ -7,10 +7,30 @@ import { Button, buttonVariants } from "./ui/button";
 import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import logo from "../lib/logo_white.png";
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from './ui/popover'
+import { NotificationsPopover } from "./notifications-popover";
+import { useEffect, useState } from "react";
+import { onSnapshot } from "firebase/firestore";
+import { notificationsQuery, notificationsRef, notificationsRefNoRead } from "../constants/refs";
 
 const NavBar = () => {
   const user = useSelector(selectUser);
   const userDoc = useSelector(selectUserDoc);
+
+  const [notifications, setNotifications] = useState([])
+
+  useEffect(() => {
+    const unsub = onSnapshot(notificationsQuery(user.uid), (snapshot) => {
+      setNotifications(snapshot.docs.map(d => ({
+        ...d.data(),
+        id: d.id
+      })))
+    })
+
+    return () => {
+      unsub()
+    }
+  }, [])
 
   return (
     <div className="flex flex-row justify-between p-2 bg-primary text-white">
@@ -53,9 +73,9 @@ const NavBar = () => {
               פאנל ניהול
             </Link>
           )}
-          <Link to="" className={buttonVariants({ variant: "ghost" })}>
-            <Bell />
-          </Link>
+
+
+          <NotificationsPopover notifications={notifications} />
           <Button onClick={() => signOut(auth)} variant="destructive">
             התנתקות
           </Button>

@@ -62,7 +62,7 @@ const HomePage = () => {
       );
     });
 
-    const q2 = user.favorites
+    const q2 = (user.favorites || [])
       .slice(user.favorites.length - 3, user.favorites.length)
       .map((id) => getDoc(lessonRef(id)));
 
@@ -86,7 +86,7 @@ const HomePage = () => {
     try {
       const docs = await getLessonsByFilter(input);
       setLessons(docs);
-    } catch (e) {}
+    } catch (e) { }
     setIsSearching(false);
   };
 
@@ -108,7 +108,7 @@ const HomePage = () => {
             <div className="flex items-center relative">
               <Input
                 type="text"
-                className="min-w-[300px]"
+                className="min-w-[300px] h-12 text-lg"
                 placeholder="חיפוש"
                 {...searchForm.register("free_text")}
               />
@@ -116,7 +116,7 @@ const HomePage = () => {
             </div>
 
             <Select onValueChange={(val) => searchForm.setValue("track", val)}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] h-12 text-lg">
                 <SelectValue value={null} placeholder="מסלול" />
               </SelectTrigger>
               <SelectContent>
@@ -131,7 +131,7 @@ const HomePage = () => {
             </Select>
 
             <Select onValueChange={(val) => searchForm.setValue("_class", val)}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] h-12 text-lg">
                 <SelectValue value={null} placeholder="חוג" />
               </SelectTrigger>
               <SelectContent>
@@ -146,7 +146,7 @@ const HomePage = () => {
             </Select>
 
             <Select onValueChange={(val) => searchForm.setValue("grade", val)}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] h-12 text-lg">
                 <SelectValue value={null} placeholder="כיתה" />
               </SelectTrigger>
               <SelectContent>
@@ -162,16 +162,16 @@ const HomePage = () => {
             <Button
               loading={searching}
               type="submit"
-              className="p-2 text-white rounded-md"
+              className="p-2 h-12 w-28 text-white rounded-md text-lg"
             >
               חיפוש
             </Button>
           </form>
 
           <div className="flex gap-2">
-            <Button onClick={handleGetMyLessons}>המערכים שלי</Button>
             <Link
-              className={buttonVariants({ variant: "default" })}
+
+              className={`${buttonVariants({ variant: "default" })} text-lg h-12`}
               to="/lesson"
             >
               יצירת מערך שיעור
@@ -199,21 +199,30 @@ const HomePage = () => {
           </div>
         )}
 
-        <h2 className="py-5">המערכים שלי</h2>
-        <div id="divider" className="border-b border-slate-300 mb-5"></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-5">
-          {lessons.map((lesson) => (
-            <Link
-              className="w-fit border rounded-lg"
-              to={`/lesson/${lesson.id}`}
-            >
-              <LessonCard
-                lesson={lesson}
-                isFavorite={(user.favorites || []).includes(lesson.id)}
-              />
-            </Link>
-          ))}
-        </div>
+        {lessons.length > 0 ?
+          <>
+            <h2 className="py-5">המערכים שלי</h2>
+            <div id="divider" className="border-b border-slate-300 mb-5"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-5">
+              {lessons.map((lesson) => (
+                <Link
+                  key={lesson.id}
+                  className="w-fit border rounded-lg"
+                  to={`/lesson/${lesson.id}`}
+                >
+                  <LessonCard
+                    lesson={lesson}
+                    isFavorite={(user.favorites || []).includes(lesson.id)}
+                  />
+                </Link>
+              ))}
+            </div>
+          </> :
+          <div className="text-xl">
+            <Link className="text-blue-500 hover:text-blue-700 font-bold" to="/lesson">לחץ כאן</Link> כדי ליצור את המערך הראשון שלך
+          </div>
+
+        }
       </div>
     </div>
   );

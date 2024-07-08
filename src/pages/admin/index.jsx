@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../../services/firebase';
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, FieldValue } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, FieldValue, deleteField } from 'firebase/firestore';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import './admin.css';
@@ -8,6 +8,7 @@ import Modal from '../../components/lesson-modal'; // Assume both Lesson and Use
 import LessonForm from '../lesson-form/index.jsx';
 import UserForm from '../register/index.jsx';
 import ConfirmationModal from '../../components/confirmation-modal';
+import ReportsTab from './reports-tab.jsx';
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -79,7 +80,7 @@ const Admin = () => {
 
   const handleRoleChange = async (id, isAdmin) => {
     const userDoc = doc(firestore, 'users', id);
-    await updateDoc(userDoc, { role: isAdmin ? 'admin' : '' });
+    await updateDoc(userDoc, { role: isAdmin ? 'admin' : deleteField() });
     fetchUsers();
   };
 
@@ -181,7 +182,7 @@ const Admin = () => {
         </TabPanel>
 
         <TabPanel>
-          <h2>Reports</h2>
+          <ReportsTab />
         </TabPanel>
       </Tabs>
 

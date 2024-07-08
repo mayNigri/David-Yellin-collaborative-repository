@@ -1,5 +1,6 @@
-import { addDoc, arrayRemove, arrayUnion, endAt, getDoc, getDocs, limit, orderBy, query, startAt, updateDoc, where } from "firebase/firestore"
-import { lessonsRef, userRef } from "./refs";
+import { addDoc, arrayRemove, arrayUnion, endAt, getDoc, getDocs, limit, orderBy, query, serverTimestamp, startAt, updateDoc, where } from "firebase/firestore"
+import { commentsRef, lessonRef, lessonsRef, notificationsRef, userRef } from "./refs";
+import { firestore } from "../services/firebase";
 
 export const getMyLessons = async (uid) => {
     const q = query(lessonsRef, limit(5), where("uid", "==", uid));
@@ -49,10 +50,64 @@ export const removeFromFavorites = async (uid, lessonId) => {
     return r;
 }
 
-const createLesson = async (uid, input) => {
+export const createLesson = async (uid, input) => {
     const lessonDoc = await addDoc(lessonsRef, {
         uid,
-        ...input
+        ...input,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
     })
     return lessonDoc;
+}
+
+export const updateLesson = async (input) => {
+    const lessonDoc = await updateDoc(lessonsRef, {
+        ...input,
+        updatedAt: serverTimestamp()
+    })
+    return lessonDoc;
+}
+
+export const getLessonById = async (lessonId) => {
+    const doc = await getDoc(lessonRef(lessonId));
+    return {
+        ...doc.data(),
+        id: doc.id
+    };
+}
+
+export const getLessonComments = async (lessonId, _limit = 5) => {
+    const comments = await getDocs(query(commentsRef(lessonId), limit(_limit), orderBy("createdAt", "desc")))
+    return comments.docs.map((d) => d.data());
+}
+
+export const postComment = async (uid, user_name, lessonId, comment) => {
+    const commentDoc = await addDoc(commentsRef(lessonId), {
+        uid,
+        name: user_name,
+        comment,
+        createdAt: serverTimestamp()
+    })
+
+    const lessonDoc = await getLessonById(lessonId);
+
+    // enable this line in production:
+    // if (lessonDoc.data().uid === uid) return commentDoc.id;
+
+    // create notification
+    try {
+        await addDoc(notificationsRef(lessonDoc.uid), {
+            uid,
+            user_name,
+            lessonId,
+            type: "comment",
+            createdAt: serverTimestamp(),
+            read: false
+        })
+    }
+    catch (e) {
+        console.log(e);
+    }
+
+    return commentDoc.id;
 }

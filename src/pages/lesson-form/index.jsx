@@ -15,17 +15,19 @@ import { Button } from "../../components/ui/button";
 import { useSelector } from "react-redux";
 import { selectUser } from '../../redux/auth-slice'
 import { addDoc, updateDoc } from "firebase/firestore";
+import { FieldValue } from 'firebase/firestore'
 import { useNavigate } from "react-router-dom";
 import { lessonRef, lessonsRef } from '../../constants/refs'
 import { uploadFileAndGetUrl } from "../../services/firebase";
 import { useRef, useState } from "react";
+import { createLesson, updateLesson } from "../../constants/lesson-actions";
 
 const validator = z.object({
-  track: z.enum(tracks),
-  class: z.enum(classes),
-  grade: z.enum(grades),
-  description: z.string(),
-  name: z.string(),
+  track: z.enum(tracks, { required_error: 'אנא בחר מסלול' }),
+  class: z.enum(classes, { required_error: 'אנא בחר חוג' }),
+  grade: z.enum(grades, { required_error: 'אנא בחר כיתה' }),
+  description: z.string("אנא הזן תיאור למערך השיעור"),
+  name: z.string("אנא הזן שם למערך השיעור"),
   fileUrl: z.string().url().optional(),
 });
 
@@ -52,14 +54,12 @@ const LessonFormPage = ({ navAfter = true }) => {
     setLoading(true)
     try {
 
-      const lessonDoc = await addDoc(lessonsRef, {
-        uid: user.uid,
-        ...input
-      });
+      const lessonDoc = await createLesson(input, user.uid);
 
-      const url = await uploadFileAndGetUrl(file, `/lessons/${user.uid}/${lessonDoc.id}.${file.name}`);
-
-      await updateDoc(lessonRef(lessonDoc.id), { fileUrl: url })
+      if (file) {
+        const fileUrl = await uploadFileAndGetUrl(file, `/lessons/${user.uid}/${lessonDoc.id}.${file.name}`);
+        await updateLesson({ fileUrl })
+      }
 
       alert('המערך נוצר בהצלחה')
 
@@ -86,53 +86,53 @@ const LessonFormPage = ({ navAfter = true }) => {
           <Input type="text" placeholder="שם המערך" {...register("name")} />
         </div>
         <div>
-        <Label>מסלול</Label>
-        <Select onValueChange={(val) => setValue("track", val)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="אנא בחר" />
-          </SelectTrigger>
-          <SelectContent>
-            {tracks.map((item) => {
-              return <SelectItem key={item} value={item}>{item}</SelectItem>;
-            })}
-          </SelectContent>
-        </Select>
+          <Label>מסלול</Label>
+          <Select onValueChange={(val) => setValue("track", val)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="אנא בחר" />
+            </SelectTrigger>
+            <SelectContent>
+              {tracks.map((item) => {
+                return <SelectItem key={item} value={item}>{item}</SelectItem>;
+              })}
+            </SelectContent>
+          </Select>
         </div>
         <div>
-        <Label htmlFor="class">חוג</Label>
-        <Select onValueChange={(val) => setValue("class", val)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue className="w-full" placeholder="אנא בחר" />
-          </SelectTrigger>
-          <SelectContent>
-            {classes.map((item) => {
-              return <SelectItem key={item} value={item}>{item}</SelectItem>;
-            })}
-          </SelectContent>
-        </Select>
+          <Label htmlFor="class">חוג</Label>
+          <Select onValueChange={(val) => setValue("class", val)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue className="w-full" placeholder="אנא בחר" />
+            </SelectTrigger>
+            <SelectContent>
+              {classes.map((item) => {
+                return <SelectItem key={item} value={item}>{item}</SelectItem>;
+              })}
+            </SelectContent>
+          </Select>
         </div>
         <div>
-        <Label>כיתה</Label>
-        <Select onValueChange={(val) => setValue("grade", val)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="אנא בחר" />
-          </SelectTrigger>
-          <SelectContent>
-            {grades.map((item) => {
-              return <SelectItem key={item} value={item}>{item}</SelectItem>;
-            })}
-          </SelectContent>
-        </Select>
+          <Label>כיתה</Label>
+          <Select onValueChange={(val) => setValue("grade", val)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="אנא בחר" />
+            </SelectTrigger>
+            <SelectContent>
+              {grades.map((item) => {
+                return <SelectItem key={item} value={item}>{item}</SelectItem>;
+              })}
+            </SelectContent>
+          </Select>
         </div>
 
         <div>
-        <Label>תיאור המערך</Label>
-        <Input type="text" placeholder="טקסט חופשי" {...register("description")} />
+          <Label>תיאור המערך</Label>
+          <Input type="text" placeholder="טקסט חופשי" {...register("description")} />
         </div>
 
         <div>
           <Label>העלאת קובץ המערך</Label>
-          <Button onClick={() => fileRef.current.click()}>לחץ כאן להעלאת קובץ המערך</Button>
+          <Button type="button" onClick={() => fileRef.current.click()}>לחץ כאן להעלאת קובץ המערך</Button>
           {file && <p><b>שם הקובץ:</b> {file.name}</p>}
           <input ref={fileRef} hidden type="file" onChange={async (e) => {
             setFile(e.target.files[0] || null);

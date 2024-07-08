@@ -40,7 +40,10 @@ function App() {
             if (user) {
               const userDoc = await getDoc(userRef(user.uid));
               if (userDoc.exists()) {
-                dispatch(setUserDoc(userDoc.data()));
+                dispatch(setUserDoc({
+                  ...userDoc.data(),
+                  favorites: userDoc.data().favorites || []
+                }));
               }
               dispatch(setUser(user.toJSON()));
             } else {
