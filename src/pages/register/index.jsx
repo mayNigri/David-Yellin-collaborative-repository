@@ -38,7 +38,7 @@ const validator = z.object({
         required_error: "יש להזין מכללה"
     }),
     track: z.enum(tracks, {required_error: "יש לבחור מסלול"}),
-    class: z.enum(classes, {required_error: "יש לבחור חוג"}),
+    _class: z.enum(classes, {required_error: "יש לבחור חוג"}),
     year: z.number({
         required_error: "יש להזין שנה אקדמית"
     }).int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
@@ -74,7 +74,7 @@ const RegisterPage = () => {
     const [firebaseError, setfirebaseError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = async ({ email, password, fullName, phone, college, path, department, year }) => {
+    const onSubmit = async ({ email, password, fullName, phone, college, track, year, _class }) => {
         // Create User:
         setLoading(true)
         setfirebaseError(null);
@@ -88,8 +88,8 @@ const RegisterPage = () => {
             fullName,
             phone,
             college,
-            path,
-            department,
+            track,
+            class: _class,
             year
         })
         alert("הרשמתך בוצעה בהצלחה");
@@ -155,8 +155,8 @@ const RegisterPage = () => {
                 </div>
 
                 <div>
-                <Label htmlFor="class">חוג</Label>
-                <Select onValueChange={(val) => setValue('class', val)}>
+                <Label htmlFor="_class">חוג</Label>
+                <Select onValueChange={(val) => setValue('_class', val)}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="אנא בחר" />
                     </SelectTrigger>

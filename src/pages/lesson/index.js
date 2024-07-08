@@ -76,7 +76,7 @@ const LessonPage = () => {
 
       <div>{lesson.description}</div>
 
-      {lesson.fileUrl && (
+      {Boolean(lesson.fileUrl) && (
         <div>
           <a
             href={lesson.fileUrl}

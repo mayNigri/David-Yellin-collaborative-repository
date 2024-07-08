@@ -18,8 +18,7 @@ import { addDoc, updateDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { lessonRef, lessonsRef } from '../../constants/refs'
 import { uploadFileAndGetUrl } from "../../services/firebase";
-import { useState } from "react";
-import LoadingIndicator from "../../components/loading-indicator";
+import { useRef, useState } from "react";
 
 const validator = z.object({
   track: z.enum(tracks),
@@ -36,6 +35,8 @@ const LessonFormPage = ({ navAfter = true }) => {
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false)
+
+  const fileRef = useRef(null);
 
   const {
     register,
@@ -74,14 +75,17 @@ const LessonFormPage = ({ navAfter = true }) => {
   };
 
   return (
-    <div>
+    <div className="p-5 space-y-5 flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-3">יצירת מערך שיעור</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col items-start justify-start space-y-2 max-w-[300px]"
+        className="gap-5 grid grid-cols-2 max-w-[500px]"
       >
-        <Label>שם המערך</Label>
-        <Input type="text" placeholder="שם המערך" {...register("name")} />
+        <div>
+          <Label>שם המערך</Label>
+          <Input type="text" placeholder="שם המערך" {...register("name")} />
+        </div>
+        <div>
         <Label>מסלול</Label>
         <Select onValueChange={(val) => setValue("track", val)}>
           <SelectTrigger className="w-[180px]">
@@ -93,6 +97,8 @@ const LessonFormPage = ({ navAfter = true }) => {
             })}
           </SelectContent>
         </Select>
+        </div>
+        <div>
         <Label htmlFor="class">חוג</Label>
         <Select onValueChange={(val) => setValue("class", val)}>
           <SelectTrigger className="w-[180px]">
@@ -104,6 +110,8 @@ const LessonFormPage = ({ navAfter = true }) => {
             })}
           </SelectContent>
         </Select>
+        </div>
+        <div>
         <Label>כיתה</Label>
         <Select onValueChange={(val) => setValue("grade", val)}>
           <SelectTrigger className="w-[180px]">
@@ -115,16 +123,23 @@ const LessonFormPage = ({ navAfter = true }) => {
             })}
           </SelectContent>
         </Select>
+        </div>
 
+        <div>
         <Label>תיאור המערך</Label>
         <Input type="text" placeholder="טקסט חופשי" {...register("description")} />
+        </div>
 
-        <Label>העלאת קובץ המערך</Label>
-        <input type="file" onChange={async (e) => {
-          setFile(e.target.files[0] || null);
-        }} />
+        <div>
+          <Label>העלאת קובץ המערך</Label>
+          <Button onClick={() => fileRef.current.click()}>לחץ כאן להעלאת קובץ המערך</Button>
+          {file && <p><b>שם הקובץ:</b> {file.name}</p>}
+          <input ref={fileRef} hidden type="file" onChange={async (e) => {
+            setFile(e.target.files[0] || null);
+          }} />
+        </div>
 
-        <Button loading={loading} type="submit" className="bg-black p-2 text-white rounded-md">יצירה</Button>
+        <Button loading={loading} type="submit" className="p-2 text-white rounded-md">יצירה</Button>
       </form>
     </div>
   );
