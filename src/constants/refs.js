@@ -7,5 +7,5 @@ export const lessonRef = (id) => doc(collection(firestore, "lessons"), id);
 export const userRef = (id) => doc(collection(firestore, "users"), id);
 export const commentsRef = (lessonId) => collection(lessonRef(lessonId), "comments");
 export const commentRef = (lessonId, commentId) => doc(commentsRef(lessonId), commentId);
-export const notificationsRef = (uid, _limit = 20) => collection(firestore, doc(firestore, "users", uid).path, "notifications")
+export const notificationsRef = (uid) => collection(firestore, doc(firestore, "users", uid).path, "notifications")
 export const notificationsQuery = (uid, _limit = 20) => query(collection(firestore, doc(firestore, "users", uid).path, "notifications"), limit(_limit))

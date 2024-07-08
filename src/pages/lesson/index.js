@@ -130,7 +130,7 @@ const LessonPage = () => {
               <p><b>יוצר השיעור: </b> {creator}</p>
             </div>
             <div>
-              <p><b>עודכן לאחרונה: </b> {new Date(lesson.updatedAt).toLocaleDateString("en-GB")}</p>
+              <p><b>עודכן לאחרונה: </b> {new Date(lesson.updatedAt.toMillis()).toLocaleDateString("en-GB")}</p>
             </div>
           </div>
         </div>

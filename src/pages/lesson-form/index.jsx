@@ -54,11 +54,11 @@ const LessonFormPage = ({ navAfter = true }) => {
     setLoading(true)
     try {
 
-      const lessonDoc = await createLesson(input, user.uid);
+      const lessonDoc = await createLesson(user.uid, input);
 
       if (file) {
         const fileUrl = await uploadFileAndGetUrl(file, `/lessons/${user.uid}/${lessonDoc.id}.${file.name}`);
-        await updateLesson({ fileUrl })
+        await updateLesson(lessonDoc.id, { fileUrl })
       }
 
       alert('המערך נוצר בהצלחה')

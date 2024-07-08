@@ -60,8 +60,8 @@ export const createLesson = async (uid, input) => {
     return lessonDoc;
 }
 
-export const updateLesson = async (input) => {
-    const lessonDoc = await updateDoc(lessonsRef, {
+export const updateLesson = async (lessonId, input) => {
+    const lessonDoc = await updateDoc(lessonRef(lessonId), {
         ...input,
         updatedAt: serverTimestamp()
     })

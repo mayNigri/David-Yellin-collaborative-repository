@@ -49,18 +49,11 @@ const HomePage = () => {
   });
 
   const [lessons, setLessons] = useState([]);
+  const [myLessons, setMyLessons] = useState([]);
   const [favlessons, setFavLessons] = useState([]);
 
   useEffect(() => {
-    const q = query(lessonsRef, limit(5));
-    getDocs(q).then((querySnapshot) => {
-      setLessons(
-        querySnapshot.docs.map((d) => ({
-          ...d.data(),
-          id: d.id,
-        }))
-      );
-    });
+    handleGetMyLessons()
 
     const q2 = (user.favorites || [])
       .slice(user.favorites.length - 3, user.favorites.length)
@@ -78,7 +71,7 @@ const HomePage = () => {
 
   const handleGetMyLessons = async () => {
     const docs = await getMyLessons(user.id);
-    setLessons(docs);
+    setMyLessons(docs);
   };
 
   const handleGetLessonsByFilter = async (input) => {
@@ -199,12 +192,12 @@ const HomePage = () => {
           </div>
         )}
 
-        {lessons.length > 0 ?
+        {myLessons.length > 0 ?
           <>
             <h2 className="py-5">המערכים שלי</h2>
             <div id="divider" className="border-b border-slate-300 mb-5"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-5">
-              {lessons.map((lesson) => (
+              {myLessons.map((lesson) => (
                 <Link
                   key={lesson.id}
                   className="w-fit border rounded-lg"
@@ -223,6 +216,26 @@ const HomePage = () => {
           </div>
 
         }
+
+        {lessons.length > 0 &&
+          <>
+            <h2 className="py-5">תוצאות חיפוש</h2>
+            <div id="divider" className="border-b border-slate-300 mb-5"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-5">
+              {lessons.map((lesson) => (
+                <Link
+                  key={lesson.id}
+                  className="w-fit border rounded-lg"
+                  to={`/lesson/${lesson.id}`}
+                >
+                  <LessonCard
+                    lesson={lesson}
+                    isFavorite={(user.favorites || []).includes(lesson.id)}
+                  />
+                </Link>
+              ))}
+            </div>
+          </>}
       </div>
     </div>
   );
