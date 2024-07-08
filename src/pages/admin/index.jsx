@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../../services/firebase';
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, FieldValue } from 'firebase/firestore';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import './admin.css';
@@ -77,6 +77,12 @@ const Admin = () => {
     fetchLessons();
   };
 
+  const handleRoleChange = async (id, isAdmin) => {
+    const userDoc = doc(firestore, 'users', id);
+    await updateDoc(userDoc, { role: isAdmin ? 'admin' : '' });
+    fetchUsers();
+  };
+
   const openConfirmationModal = (message, onConfirm) => {
     setConfirmationMessage(message);
     setOnConfirmAction(() => onConfirm);
@@ -97,7 +103,6 @@ const Admin = () => {
           <Tab>Users</Tab>
           <Tab>Lessons</Tab>
           <Tab>Reports</Tab>
-
         </TabList>
 
         <TabPanel>
@@ -110,15 +115,31 @@ const Admin = () => {
               <tr>
                 <th>Name</th>
                 <th>Email</th>
+                <th>College</th>
+                <th>Class</th>
+                <th>Year</th>
+                <th>Phone</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
                 <tr key={user.id}>
-                  <td>{user.name}</td>
+                  <td>{user.fullName}</td>
                   <td>{user.email}</td>
+                  <td>{user.college}</td>
+                  <td>{user.class}</td>
+                  <td>{user.year}</td>
+                  <td>{user.phone}</td>
                   <td className="actions">
+                    <label>
+                      Admin
+                      <input
+                        type="checkbox"
+                        checked={user.role === 'admin'}
+                        onChange={(e) => handleRoleChange(user.id, e.target.checked)}
+                      />
+                    </label>
                     <button onClick={() => openConfirmationModal('Are you sure you want to delete this user?', () => handleDeleteUser(user.id))}>Delete</button>
                     <button onClick={() => {
                       setCurrentUser(user);
