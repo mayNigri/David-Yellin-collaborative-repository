@@ -79,16 +79,16 @@ function App() {
                 <Route path="lesson" element={<LessonFormPage />} />
                 <Route path="lesson/:id" element={<LessonPage />} />
                 <Route path="profile" element={<MyProfilePage />} />
-                <Route path="*" element={<Navigate to="/" />} />
                 {userDoc.role === "admin" && (
                   <Route path="admin" element={<AdminPage />} />
                 )}
+                <Route path="*" element={<Navigate to="/" />} />
               </>
             ) : (
               <>
-                <Route path="/" element={<LoginPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="register" element={<RegisterPage />} />
+                <Route path="*" element={<Navigate to="/login" />} />
               </>
             )}
           </Route>

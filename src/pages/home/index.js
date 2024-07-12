@@ -1,7 +1,6 @@
-import { getDocs, query, limit, where, getDoc } from "firebase/firestore";
+import { getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import LessonCard from "../../components/lesson-card";
-import FiltersModal from "../../components/filters-modal";
 import { useSelector } from "react-redux";
 import { selectUserDoc } from "../../redux/auth-slice";
 import { Button, buttonVariants } from "../../components/ui/button";
@@ -24,6 +23,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
+import { Plus } from 'lucide-react'
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../components/ui/tooltip"
+
+
 const validator = z.object({
   track: z
     .enum(tracks.concat([null]))
@@ -84,7 +93,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="p-5 space-y-5">
+    <div className="p-5 space-y-5 min-h-[calc(100vh-144px)]">
       <h1>דף הבית</h1>
       <p>שלום, {user.fullName}</p>
       <div>
@@ -161,16 +170,44 @@ const HomePage = () => {
             </Button>
           </form>
 
-          <div className="flex gap-2">
-            <Link
 
-              className={`${buttonVariants({ variant: "default" })} text-lg h-12`}
-              to="/lesson"
-            >
-              יצירת מערך שיעור
-            </Link>
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className="bottom-5 left-5 fixed rounded-full p-2 border border-primary bg-secondary shadow-md">
+                <Link
+                  className={`text-3xl rounded-full`}
+                  to="/lesson"
+                >
+                  <Plus size={40} className="text-primary" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>מערך שיעור חדש</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
         </div>
+
+        {lessons.length > 0 &&
+          <>
+            <h2 className="py-5">תוצאות חיפוש</h2>
+            <div id="divider" className="border-b border-slate-300 mb-5"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-5">
+              {lessons.map((lesson) => (
+                <Link
+                  key={lesson.id}
+                  className="w-fit border rounded-lg"
+                  to={`/lesson/${lesson.id}`}
+                >
+                  <LessonCard
+                    lesson={lesson}
+                    isFavorite={(user.favorites || []).includes(lesson.id)}
+                  />
+                </Link>
+              ))}
+            </div>
+          </>}
 
         {favlessons.length > 0 && (
           <div>
@@ -217,25 +254,7 @@ const HomePage = () => {
 
         }
 
-        {lessons.length > 0 &&
-          <>
-            <h2 className="py-5">תוצאות חיפוש</h2>
-            <div id="divider" className="border-b border-slate-300 mb-5"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-5">
-              {lessons.map((lesson) => (
-                <Link
-                  key={lesson.id}
-                  className="w-fit border rounded-lg"
-                  to={`/lesson/${lesson.id}`}
-                >
-                  <LessonCard
-                    lesson={lesson}
-                    isFavorite={(user.favorites || []).includes(lesson.id)}
-                  />
-                </Link>
-              ))}
-            </div>
-          </>}
+
       </div>
     </div>
   );

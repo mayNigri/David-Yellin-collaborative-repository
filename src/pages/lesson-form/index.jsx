@@ -75,7 +75,7 @@ const LessonFormPage = ({ navAfter = true }) => {
   };
 
   return (
-    <div className="p-5 space-y-5 flex flex-col items-center justify-center">
+    <div className="p-5 space-y-5 flex flex-col items-center justify-center min-h-[calc(100vh-144px)]">
       <h1 className="text-3xl font-bold mb-3">יצירת מערך שיעור</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}

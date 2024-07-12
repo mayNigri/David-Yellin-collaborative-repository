@@ -4,7 +4,7 @@ const LessonCard = ({ lesson, isFavorite = false }) => {
   const Fav = StarIcon;
 
   return (
-    <div className="h-52 flex flex-col p-5 w-[300px]">
+    <div className="h-52 flex flex-col p-5 w-[300px] bg-white rounded-md shadow-lg hover:bg-slate-100">
       <div className="flex flex-row justify-between w-full">
         <div>
           <h2>{lesson.name || "שם השיעור"}</h2>
