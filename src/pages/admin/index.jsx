@@ -6,7 +6,7 @@ import 'react-tabs/style/react-tabs.css';
 import './admin.css';
 import Modal from '../../components/lesson-modal'; // Assume both Lesson and User modals are similar
 import LessonForm from '../lesson-form/index.jsx';
-import UserForm from '../register/index.jsx';
+import UserForm from '../register/register-form.js';
 import ConfirmationModal from '../../components/confirmation-modal';
 import ReportsTab from './reports-tab.jsx';
 
