@@ -35,6 +35,8 @@ const Rating = ({ lessonId }) => {
             ...doc.data(),
             id: doc.id
         })))
+
+        setRating(querySnapshot.docs.find(doc => doc.id === uid)?.data()?.rate || 0)
     };
 
     useEffect(() => {
@@ -54,16 +56,18 @@ const Rating = ({ lessonId }) => {
     };
 
     return (
-        <div className="star-rating">
+        <div className="star-rating py-2 space-y-2">
             <div className="average-rating">
                 <p>Average Rating: {averageRating.toFixed(1)} ({totalRatings} ratings)</p>
             </div>
-            {new Array(5).fill(null).map((star, index) => {
-                index += 1;
-                return (
-                    <StarIcon className={index <= (hover || rating) ? "fill-yellow-400" : "off"} onClick={() => handleClick(index)} />
-                );
-            })}
+            <div className="flex space-x-reverse space-x-1">
+                {new Array(5).fill(null).map((star, index) => {
+                    index += 1;
+                    return (
+                        <StarIcon className={index <= (hover || rating) ? "fill-yellow-400" : "off"} onClick={() => handleClick(index)} />
+                    );
+                })}
+            </div>
         </div>
     );
 };
