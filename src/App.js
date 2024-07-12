@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/login";
 import HomePage from "./pages/home";
 import MyProfilePage from "./pages/my-profile";
@@ -72,10 +72,10 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={user ? <Header /> : undefined}>
+          <Route path="/" element={user ? <Header /> : <Outlet />}>
             {user ? (
               <>
-                <Route path="/" element={<HomePage />} />
+                <Route index element={<HomePage />} />
                 <Route path="lesson" element={<LessonFormPage />} />
                 <Route path="lesson/:id" element={<LessonPage />} />
                 <Route path="updatelesson/:id" element={<LessonFormPage />} />
@@ -87,7 +87,8 @@ function App() {
               </>
             ) : (
               <>
-                <Route path="/login" element={<LoginPage />} />
+                <Route index element={<LoginPage />} />
+                <Route path="login" element={<LoginPage />} />
                 <Route path="register" element={<RegisterPage />} />
                 <Route path="*" element={<Navigate to="/login" />} />
               </>
