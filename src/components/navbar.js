@@ -33,7 +33,7 @@ const NavBar = () => {
   }, [])
 
   return (
-    <div className="flex flex-row justify-between p-2 bg-primary text-white">
+    <div className="flex flex-row justify-between p-2 bg-primary text-white h-16">
       <ul className="flex flex-row space-x-reverse space-x-2 items-center">
         <li className="px-2">
           <img src={logo} alt="logo" style={{ width: "50px" }} />

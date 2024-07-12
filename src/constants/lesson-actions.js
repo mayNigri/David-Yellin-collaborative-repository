@@ -92,7 +92,7 @@ export const postComment = async (uid, user_name, lessonId, comment) => {
     const lessonDoc = await getLessonById(lessonId);
 
     // enable this line in production:
-    // if (lessonDoc.data().uid === uid) return commentDoc.id;
+    if (lessonDoc.uid === uid) return commentDoc.id;
 
     // create notification
     try {
