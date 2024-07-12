@@ -178,12 +178,12 @@ const Admin = () => {
                 <tr key={lesson.id}>
                   <td>{lesson.title}</td>
                   <td>{lesson.class}</td>
-                  <td>{lesson.createdAt}</td>
+                  <td>{new Date(lesson.createdAt.toMillis()).toLocaleDateString('en-GB')}</td>
                   <td>{lesson.grade}</td>
                   <td>{lesson.name}</td>
                   <td>{lesson.track}</td>
                   <td>{lesson.uid}</td>
-                  <td>{lesson.updatedAt}</td>
+                  <td>{new Date(lesson.updatedAt.toMillis()).toLocaleDateString('en-GB')}</td>
                   <td>{lesson.description}</td>
                   <td className="actions">
                     <button onClick={() => openConfirmationModal('Are you sure you want to delete this lesson?', () => handleDeleteLesson(lesson.id))}>Delete</button>
