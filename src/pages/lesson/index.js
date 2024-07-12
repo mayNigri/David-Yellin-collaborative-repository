@@ -1,7 +1,7 @@
 import { addDoc, arrayUnion, getDoc, getDocs, limit, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
 import { StarIcon } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { commentsRef, lessonRef, userRef } from "../../constants/refs";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserDoc, setUserDoc } from "../../redux/auth-slice";
@@ -120,8 +120,9 @@ const LessonPage = () => {
     <div className="p-5 space-y-5 min-h-[calc(100vh-144px)] justify-center items-center flex flex-col">
       <div className="space-y-5">
         <div className="border bg-white p-5 rounded-md shadow-lg">
-
-
+          <Link to={`/updatelesson/${lessonId}`}>
+            Update
+          </Link>
           <div className="flex gap-10 items-center justify-between">
             <h1>{lesson.name}</h1>
             <button className="flex space-x-2 space-x-reverse" onClick={handleAddOrRemoveFavorite}>

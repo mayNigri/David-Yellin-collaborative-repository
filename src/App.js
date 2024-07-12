@@ -78,6 +78,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="lesson" element={<LessonFormPage />} />
                 <Route path="lesson/:id" element={<LessonPage />} />
+                <Route path="updatelesson/:id" element={<LessonFormPage />} />
                 <Route path="profile" element={<MyProfilePage />} />
                 {userDoc.role === "admin" && (
                   <Route path="admin" element={<AdminPage />} />

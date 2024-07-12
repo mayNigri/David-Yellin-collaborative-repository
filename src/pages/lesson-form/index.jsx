@@ -16,11 +16,11 @@ import { useSelector } from "react-redux";
 import { selectUser } from '../../redux/auth-slice'
 import { addDoc, updateDoc } from "firebase/firestore";
 import { FieldValue } from 'firebase/firestore'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { lessonRef, lessonsRef } from '../../constants/refs'
 import { uploadFileAndGetUrl } from "../../services/firebase";
 import { useRef, useState } from "react";
-import { createLesson, updateLesson } from "../../constants/lesson-actions";
+import { createLesson, getLessonById, updateLesson } from "../../constants/lesson-actions";
 
 const validator = z.object({
   track: z.enum(tracks, { required_error: 'אנא בחר מסלול' }),
@@ -33,6 +33,8 @@ const validator = z.object({
 
 const LessonFormPage = ({ navAfter = true }) => {
 
+  const id = useParams().id;
+
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
@@ -44,9 +46,14 @@ const LessonFormPage = ({ navAfter = true }) => {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, defaultValues },
   } = useForm({
     resolver: zodResolver(validator),
+    defaultValues: id ? async () => {
+      const lessonDoc = await getLessonById(id);
+      console.log(lessonDoc)
+      return lessonDoc;
+    } : undefined
   });
 
   const onSubmit = async (input) => {
@@ -87,7 +94,7 @@ const LessonFormPage = ({ navAfter = true }) => {
         </div>
         <div>
           <Label>מסלול</Label>
-          <Select onValueChange={(val) => setValue("track", val)}>
+          <Select value={defaultValues ? defaultValues.track : undefined} onValueChange={(val) => setValue("track", val)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="אנא בחר" />
             </SelectTrigger>
@@ -100,7 +107,7 @@ const LessonFormPage = ({ navAfter = true }) => {
         </div>
         <div>
           <Label htmlFor="class">חוג</Label>
-          <Select onValueChange={(val) => setValue("class", val)}>
+          <Select value={defaultValues ? defaultValues.class : undefined} onValueChange={(val) => setValue("class", val)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue className="w-full" placeholder="אנא בחר" />
             </SelectTrigger>
@@ -113,7 +120,7 @@ const LessonFormPage = ({ navAfter = true }) => {
         </div>
         <div>
           <Label>כיתה</Label>
-          <Select onValueChange={(val) => setValue("grade", val)}>
+          <Select value={defaultValues ? defaultValues.grade : undefined} onValueChange={(val) => setValue("grade", val)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="אנא בחר" />
             </SelectTrigger>
@@ -133,13 +140,19 @@ const LessonFormPage = ({ navAfter = true }) => {
         <div>
           <Label>העלאת קובץ המערך</Label>
           <Button type="button" onClick={() => fileRef.current.click()}>לחץ כאן להעלאת קובץ המערך</Button>
-          {file && <p><b>שם הקובץ:</b> {file.name}</p>}
+          {
+            !id ? (file && <p><b>שם הקובץ:</b> {file.name}</p>)
+              :
+              <p>{defaultValues.fileUrl}</p>
+          }
           <input ref={fileRef} hidden type="file" onChange={async (e) => {
             setFile(e.target.files[0] || null);
           }} />
         </div>
 
-        <Button loading={loading} type="submit" className="p-2 text-white rounded-md">יצירה</Button>
+        <Button loading={loading} type="submit" className="p-2 text-white rounded-md">{
+          id ? 'עדכון' : 'יצירה'
+        }</Button>
       </form>
     </div>
   );
