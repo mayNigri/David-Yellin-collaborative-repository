@@ -159,11 +159,7 @@ const RegisterForm = () => {
             </div>
 
             <div className="flex flex-col items-center w-full">
-                <Button loading={loading} type="submit" className="bg-black p-2 text-white rounded-md w-full">הרשמה</Button>
-            </div>
-
-            <div>
-                משתמש קיים? <Link className='text-blue-500 hover:text-blue-700' to="/login">התחברו</Link>
+                <Button loading={loading} type="submit" className="bg-black p-2 text-white rounded-md w-full">הוסף</Button>
             </div>
 
             {firebaseError && <p>{firebaseError.message}</p>}
