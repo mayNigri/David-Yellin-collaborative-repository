@@ -1,6 +1,6 @@
 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore'
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore'
 import { auth, firestore } from '../../services/firebase';
 import { Button } from '../../components/ui/button';
 import { useForm } from 'react-hook-form';
@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { classes, grades, tracks } from '../../constants/lesson-constants';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
-import { COLOR_WHITE , COLOR_YELLOW , COLOR_BLUE} from '../../lib/utils'
+import { COLOR_WHITE, COLOR_YELLOW, COLOR_BLUE } from '../../lib/utils'
 import {
     Select,
     SelectContent,
@@ -37,8 +37,8 @@ const validator = z.object({
     college: z.string({
         required_error: "יש להזין מכללה"
     }),
-    track: z.enum(tracks, {required_error: "יש לבחור מסלול"}),
-    _class: z.enum(classes, {required_error: "יש לבחור חוג"}),
+    track: z.enum(tracks, { required_error: "יש לבחור מסלול" }),
+    _class: z.enum(classes, { required_error: "יש לבחור חוג" }),
     year: z.number({
         required_error: "יש להזין שנה אקדמית"
     }).int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
@@ -46,22 +46,22 @@ const validator = z.object({
 
 const WavyLine = () => (
     <svg
-    height="100%"
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 10 200"
-    preserveAspectRatio="none"
-    style={{ fill: 'none', stroke: COLOR_YELLOW, strokeWidth: 4 }}
-  >
-    <path d="M10 0 C 15 500, 5 50, 10 1000 C 15 1500, 5 1500, 10 2000" />
-  </svg>
-  )
+        height="100%"
+        width="20"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 10 200"
+        preserveAspectRatio="none"
+        style={{ fill: 'none', stroke: COLOR_YELLOW, strokeWidth: 4 }}
+    >
+        <path d="M10 0 C 15 500, 5 50, 10 1000 C 15 1500, 5 1500, 10 2000" />
+    </svg>
+)
 
 
-  const errorCodes = {
+const errorCodes = {
     ['auth/email-already-in-use']: "האימייל כבר קיים במערכת",
     ['auth/phone-number-already-exists']: "מספר הטלפון כבר קיים במערכת",
-  }
+}
 
 
 const RegisterPage = () => {
@@ -79,23 +79,24 @@ const RegisterPage = () => {
         setLoading(true)
         setfirebaseError(null);
         try {
-        const { user } = await createUserWithEmailAndPassword(auth, email, password)
+            const { user } = await createUserWithEmailAndPassword(auth, email, password)
 
-        // Save User Information In Firestore
-        const userDoc = await setDoc(doc(firestore, "users", user.uid), {
-            id: user.uid,
-            email,
-            fullName,
-            phone,
-            college,
-            track,
-            class: _class,
-            year
-        })
-        alert("הרשמתך בוצעה בהצלחה");
-        navigate("/login")
+            // Save User Information In Firestore
+            const userDoc = await setDoc(doc(firestore, "users", user.uid), {
+                id: user.uid,
+                email,
+                fullName,
+                phone,
+                college,
+                track,
+                class: _class,
+                year,
+                createdAt: serverTimestamp()
+            })
+            alert("הרשמתך בוצעה בהצלחה");
+            navigate("/login")
         }
-        catch(e) {
+        catch (e) {
             setfirebaseError({
                 message: errorCodes[e.code] || "שגיאה בעת הרשמה"
             });
@@ -111,85 +112,85 @@ const RegisterPage = () => {
             <div className="min-h-screen flex items-center justify-center w-1/2 flex-col" style={{ backgroundColor: COLOR_WHITE }}>
                 <h1 className="text-3xl font-bold py-5">הרשמה</h1>
                 <form onSubmit={handleSubmit(onSubmit)} className="items-start max-w-[400px] grid-cols-2 grid gap-5 justify-center">
-                <div>
-                <Label htmlFor="fullName">שם מלא</Label>
-                <Input {...register("fullName", { required: true })} type="text" placeholder="שם מלא" />
-                </div>
+                    <div>
+                        <Label htmlFor="fullName">שם מלא</Label>
+                        <Input {...register("fullName", { required: true })} type="text" placeholder="שם מלא" />
+                    </div>
 
-                <div>
-                <Label htmlFor="email">אימייל</Label>
-                <Input {...register("email", { required: true })} type="text" placeholder="אימייל" />
-                </div>
+                    <div>
+                        <Label htmlFor="email">אימייל</Label>
+                        <Input {...register("email", { required: true })} type="text" placeholder="אימייל" />
+                    </div>
 
 
-                <div>
-                <Label htmlFor="phone">מספר טלפון</Label>
-                <Input {...register("phone", { required: true })} type="text" placeholder="מספר טלפון" />
-                </div>
+                    <div>
+                        <Label htmlFor="phone">מספר טלפון</Label>
+                        <Input {...register("phone", { required: true })} type="text" placeholder="מספר טלפון" />
+                    </div>
 
-                <div>
-                <Label htmlFor="password">סיסמה</Label>
-                <Input {...register("password", { required: true })} type="password" placeholder="סיסמא" />
-                </div>
+                    <div>
+                        <Label htmlFor="password">סיסמה</Label>
+                        <Input {...register("password", { required: true })} type="password" placeholder="סיסמא" />
+                    </div>
 
-                <div>
-                <Label htmlFor="college">מכללה</Label>
-                <Input {...register("college", { required: true })} type="text" placeholder="מכללה" />
-                </div>
+                    <div>
+                        <Label htmlFor="college">מכללה</Label>
+                        <Input {...register("college", { required: true })} type="text" placeholder="מכללה" />
+                    </div>
 
-                <div>
-                <Label htmlFor="track">מסלול</Label>
-                <Select onValueChange={(val) => setValue('track', val)}>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="אנא בחר" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {tracks.map((item) => {
-                            return (
-                                <SelectItem key={item} value={item}>{item}</SelectItem>
-                            )
-                        })
-                        }
-                    </SelectContent>
-                </Select>
-                </div>
+                    <div>
+                        <Label htmlFor="track">מסלול</Label>
+                        <Select onValueChange={(val) => setValue('track', val)}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="אנא בחר" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {tracks.map((item) => {
+                                    return (
+                                        <SelectItem key={item} value={item}>{item}</SelectItem>
+                                    )
+                                })
+                                }
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-                <div>
-                <Label htmlFor="_class">חוג</Label>
-                <Select onValueChange={(val) => setValue('_class', val)}>
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="אנא בחר" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {classes.map((item) => {
-                            return (
-                                <SelectItem key={item} value={item}>{item}</SelectItem>
-                            )
-                        })
-                        }
-                    </SelectContent>
-                </Select>
-                </div>
-            
-                <div>
-                    <Label htmlFor="year">שנה אקדמית</Label>
-                    <Input {...register("year", { required: true, setValueAs(val) {return Number(val)} })} type="number" placeholder="שנה אקדמית" />
-                </div>
-                
-                <div className="flex flex-col items-center w-full">
-                    <Button loading={loading} type="submit" className="bg-black p-2 text-white rounded-md w-full">הרשמה</Button>
-                </div>
+                    <div>
+                        <Label htmlFor="_class">חוג</Label>
+                        <Select onValueChange={(val) => setValue('_class', val)}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="אנא בחר" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {classes.map((item) => {
+                                    return (
+                                        <SelectItem key={item} value={item}>{item}</SelectItem>
+                                    )
+                                })
+                                }
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-                <div>
-                    משתמש קיים? <Link className='text-blue-500 hover:text-blue-700' to="/login">התחברו</Link>
-                </div>
-            </form>
-            {Object.keys(errors).concat(firebaseError ? [firebaseError] : []).length > 0 && <div className='text-red-500 my-5'>
-                {Object.keys(errors).map((err) => {
-                    if(errors[err].message) return <p className='list-item'>{errors[err].message}</p>
-                })}
-                {firebaseError && <p className='list-item'>{firebaseError.message}</p>}
-            </div>}
+                    <div>
+                        <Label htmlFor="year">שנה אקדמית</Label>
+                        <Input {...register("year", { required: true, setValueAs(val) { return Number(val) } })} type="number" placeholder="שנה אקדמית" />
+                    </div>
+
+                    <div className="flex flex-col items-center w-full">
+                        <Button loading={loading} type="submit" className="bg-black p-2 text-white rounded-md w-full">הרשמה</Button>
+                    </div>
+
+                    <div>
+                        משתמש קיים? <Link className='text-blue-500 hover:text-blue-700' to="/login">התחברו</Link>
+                    </div>
+                </form>
+                {Object.keys(errors).concat(firebaseError ? [firebaseError] : []).length > 0 && <div className='text-red-500 my-5'>
+                    {Object.keys(errors).map((err) => {
+                        if (errors[err].message) return <p className='list-item'>{errors[err].message}</p>
+                    })}
+                    {firebaseError && <p className='list-item'>{firebaseError.message}</p>}
+                </div>}
             </div>
             <div className="wavy-line-container flex justify-center items-center h-full" style={{ height: '100%' }}>
                 <WavyLine />
@@ -198,7 +199,7 @@ const RegisterPage = () => {
             <div className='flex justify-center w-1/2'>
                 <img src={logo_blue} alt="logo_blue" />
             </div>
-            
+
         </div>
     )
 }
