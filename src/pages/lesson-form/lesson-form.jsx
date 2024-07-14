@@ -49,7 +49,6 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
         resolver: zodResolver(validator),
         defaultValues: id ? async () => {
             const lessonDoc = await getLessonById(id);
-            console.log(lessonDoc)
             return lessonDoc;
         } : undefined
     });
@@ -59,8 +58,8 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
         setLoading(true)
         if (id) {
             if (file) {
-                const fileUrl = await uploadFileAndGetUrl(file, `/lessons/${user.uid}/${lessonDoc.id}.${file.name}`);
-                await updateLesson(lessonDoc.id, { fileUrl })
+                const fileUrl = await uploadFileAndGetUrl(file, `/lessons/${user.uid}/${id}.${file.name}`);
+                await updateLesson(id, { fileUrl })
                 const lessonDoc = await updateLesson(id, {
                     ...input,
                     fileUrl
@@ -149,7 +148,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
                 {
                     !id ? (file && <p><b>שם הקובץ:</b> {file.name}</p>)
                         :
-                        <p>{defaultValues?.fileUrl.split(".").pop() || ""}</p>
+                        <p>{defaultValues && Boolean(defaultValues.fileUrl) && defaultValues?.fileUrl.split(".").pop() || ""}</p>
                 }
                 <input ref={fileRef} hidden type="file" onChange={async (e) => {
                     setFile(e.target.files[0] || null);

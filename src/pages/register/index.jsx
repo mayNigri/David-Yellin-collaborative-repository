@@ -178,7 +178,7 @@ const RegisterPage = () => {
                     </div>
 
                     <div className="flex flex-col items-center w-full">
-                        <Button loading={loading} type="submit" className="bg-black p-2 text-white rounded-md w-full">הרשמה</Button>
+                        <Button loading={loading} type="submit">הרשמה</Button>
                     </div>
 
                     <div>

@@ -63,7 +63,7 @@ const ForgotMyPasswordPage = () => {
                     </div>
 
                     <div className="flex flex-row space-x-reverse space-x-2 items-center">
-                        <Button loading={loading} className="bg-black p-2 text-white rounded-md">שלח לינק לאיפוס</Button>
+                        <Button loading={loading}>שלח לינק לאיפוס</Button>
                         <Link className="text-blue-500 hover:text-blue-700" to="/register">הרשמה</Link>
                         <Link className="text-blue-500 hover:text-blue-700" to="/login">התחברות</Link>
 

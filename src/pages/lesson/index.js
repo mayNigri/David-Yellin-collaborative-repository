@@ -174,14 +174,14 @@ const LessonPage = () => {
               </div>
             </div>
           )}
-          <div className="w-full flex items-end justify-end gap-3">
+          {lesson.uid === user.id && <div className="w-full flex items-end justify-end gap-3">
             <Link className={buttonVariants()} to={`/updatelesson/${lessonId}`}>
               עריכה
             </Link>
             <Button variant="destructive" onClick={() => setShowConfirmationModal(lessonId)}>
               מחיקה
             </Button>
-          </div>
+          </div>}
         </div>
 
         <div className="border bg-white p-5 rounded-md shadow-lg">

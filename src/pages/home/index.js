@@ -35,15 +35,15 @@ import {
 
 const validator = z.object({
   track: z
-    .enum(tracks.concat([null]))
+    .enum(tracks.concat(""))
     .nullable()
     .optional(),
   _class: z
-    .enum(classes.concat([null]))
+    .enum(classes.concat(""))
     .nullable()
     .optional(),
   grade: z
-    .enum(grades.concat([null]))
+    .enum(grades.concat(""))
     .nullable()
     .optional(),
   free_text: z.string().trim().optional(),
@@ -55,6 +55,11 @@ const HomePage = () => {
 
   const searchForm = useForm({
     resolver: zodResolver(validator),
+    defaultValues: {
+      track: undefined,
+      _class: undefined,
+      grade: undefined,
+    }
   });
 
   const [lessons, setLessons] = useState([]);
@@ -65,15 +70,14 @@ const HomePage = () => {
     handleGetMyLessons()
 
     const q2 = (user.favorites || [])
-      .slice(user.favorites.length - 3, user.favorites.length)
       .map((id) => getDoc(lessonRef(id)));
 
     Promise.all(q2).then((docs) => {
       setFavLessons(
-        docs.map((d) => ({
+        docs.map((d) => d.exists() ? ({
           ...d.data(),
           id: d.id,
-        }))
+        }) : undefined).filter((d) => d)
       );
     });
   }, []);
@@ -119,7 +123,7 @@ const HomePage = () => {
 
             <Select onValueChange={(val) => searchForm.setValue("track", val)}>
               <SelectTrigger className="w-[180px] h-12 text-lg">
-                <SelectValue value={null} placeholder="מסלול (הכל)" />
+                <SelectValue value={undefined} placeholder="מסלול" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={null}>
@@ -137,7 +141,7 @@ const HomePage = () => {
 
             <Select onValueChange={(val) => searchForm.setValue("_class", val)}>
               <SelectTrigger className="w-[180px] h-12 text-lg">
-                <SelectValue value={null} placeholder="חוג (הכל)" />
+                <SelectValue value={undefined} placeholder="חוג" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={null}>
@@ -155,7 +159,7 @@ const HomePage = () => {
 
             <Select onValueChange={(val) => searchForm.setValue("grade", val)}>
               <SelectTrigger className="w-[180px] h-12 text-lg">
-                <SelectValue value={null} placeholder="כיתה (הכל)" />
+                <SelectValue value={undefined} placeholder="כיתה" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={null}>

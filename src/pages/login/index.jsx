@@ -67,7 +67,7 @@ const LoginPage = () => {
                     </div>
 
                     <div className="flex flex-row space-x-reverse space-x-2 items-center">
-                        <Button loading={loading} className="bg-black p-2 text-white rounded-md">התחברות</Button>
+                        <Button loading={loading} >התחברות</Button>
                         <Link className="text-blue-500 hover:text-blue-700" to="/register">הרשמה</Link>
                     </div>
                     <Link to="/forgot-my-password">

@@ -15,11 +15,14 @@ import { userRef } from '../constants/refs';
 import { useState } from 'react';
 import { getUserById } from '../constants/user-actions';
 import LoadingIndicator from './loading-indicator';
+import { useDispatch } from 'react-redux';
+import { setUserDoc } from '../redux/auth-slice';
 
 const UserUpdateForm = ({ uid, afterUpdate }) => {
 
     const [loading, setLoading] = useState(false)
     const [loadingUser, setLoadingUser] = useState(true);
+    const dispatch = useDispatch();
 
     const { register, setValue, formState: { defaultValues }, handleSubmit } = useForm({
         defaultValues: async () => {
@@ -34,6 +37,8 @@ const UserUpdateForm = ({ uid, afterUpdate }) => {
         setLoading(true)
         await updateDoc(userRef(uid), input)
         afterUpdate && await afterUpdate(input);
+        const userDoc = await getUserById(uid)
+        dispatch(setUserDoc(userDoc))
         setLoading(false)
     }
 
