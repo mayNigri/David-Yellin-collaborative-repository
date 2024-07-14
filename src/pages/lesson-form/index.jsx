@@ -143,7 +143,7 @@ const LessonFormPage = ({ navAfter = true }) => {
           {
             !id ? (file && <p><b>שם הקובץ:</b> {file.name}</p>)
               :
-              <p>{defaultValues.fileUrl}</p>
+              <p>{defaultValues?.fileUrl.split(".").pop() || ""}</p>
           }
           <input ref={fileRef} hidden type="file" onChange={async (e) => {
             setFile(e.target.files[0] || null);

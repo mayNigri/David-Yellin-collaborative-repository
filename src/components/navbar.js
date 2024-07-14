@@ -33,14 +33,14 @@ const NavBar = () => {
   }, [])
 
   return (
-    <div className="flex flex-row justify-between p-2 bg-primary text-white h-16">
+    <div className="flex flex-row justify-between p-2 bg-primary text-white h-24">
       <ul className="flex flex-row space-x-reverse space-x-2 items-center">
         <li className="px-2">
-          <img src={logo} alt="logo" style={{ width: "50px" }} />
+          <img src={logo} alt="logo" style={{ width: "75px" }} />
         </li>
         {user && (
           <li>
-            <Link to="/" className={buttonVariants({ variant: "ghost" })}>
+            <Link to="/" className={`${buttonVariants({ variant: "ghost" })} text-xl`}>
               דף הבית
             </Link>
           </li>
@@ -59,7 +59,7 @@ const NavBar = () => {
           <li>
             <Link
               to="/profile"
-              className={buttonVariants({ variant: "ghost" })}
+              className={`${buttonVariants({ variant: "ghost" })} text-xl`}
             >
               הפרופיל שלי
             </Link>
@@ -69,14 +69,14 @@ const NavBar = () => {
       {user && (
         <div className="gap-3 flex items-center">
           {userDoc.role === "admin" && (
-            <Link to="/admin" className={buttonVariants({ variant: "ghost" })}>
+            <Link to="/admin" className={`${buttonVariants({ variant: "ghost" })} text-xl`}>
               פאנל ניהול
             </Link>
           )}
 
 
           <NotificationsPopover notifications={notifications} />
-          <Button onClick={() => signOut(auth)} variant="destructive">
+          <Button className={'text-xl'} onClick={() => signOut(auth)} variant="destructive">
             התנתקות
           </Button>
         </div>

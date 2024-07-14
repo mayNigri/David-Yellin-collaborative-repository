@@ -58,7 +58,7 @@ const Rating = ({ lessonId }) => {
     return (
         <div className="star-rating py-2 space-y-2">
             <div className="average-rating">
-                <p>Average Rating: {averageRating.toFixed(1)} ({totalRatings} ratings)</p>
+                <p>דירוג ממוצע: {averageRating.toFixed(1)} ({totalRatings} דירוגים)</p>
             </div>
             <div className="flex space-x-reverse space-x-1">
                 {new Array(5).fill(null).map((star, index) => {

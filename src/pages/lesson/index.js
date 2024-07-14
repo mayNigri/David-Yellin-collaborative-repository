@@ -149,7 +149,7 @@ const LessonPage = () => {
           </div>
 
           {Boolean(lesson.fileUrl) && (
-            <div>
+            <div className="py-5 flex gap-2">
               <a
                 href={lesson.fileUrl}
                 download={lesson.fileUrl.split("/").pop()}
@@ -158,6 +158,10 @@ const LessonPage = () => {
               >
                 הורדת שיעור
               </a>
+              <div>
+                <b>פורמט: </b>
+                {lesson.fileUrl.split(".").pop().split("?")[0]}
+              </div>
             </div>
           )}
         </div>

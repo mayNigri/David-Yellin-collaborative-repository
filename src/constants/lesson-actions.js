@@ -111,3 +111,12 @@ export const postComment = async (uid, user_name, lessonId, comment) => {
 
     return commentDoc.id;
 }
+
+export const searchLessonByName = async (name) => {
+    const q = query(lessonsRef, orderBy("name"), startAt(name), endAt(name + '\uf8ff'))
+    const result = await getDocs(q);
+    return result.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+    }));
+}

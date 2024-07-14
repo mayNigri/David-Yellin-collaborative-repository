@@ -114,7 +114,7 @@ const HomePage = () => {
                 placeholder="חיפוש"
                 {...searchForm.register("free_text")}
               />
-              <MagnifyingGlassIcon className="absolute left-2" />
+              <MagnifyingGlassIcon className="absolute left-2 size-7" />
             </div>
 
             <Select onValueChange={(val) => searchForm.setValue("track", val)}>
@@ -173,7 +173,7 @@ const HomePage = () => {
 
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger className="bottom-5 left-5 fixed rounded-full p-2 border border-primary bg-secondary shadow-md">
+              <TooltipTrigger className="bottom-5 left-5 fixed rounded-full p-2 border border-primary bg-secondary shadow-xl">
                 <Link
                   className={`text-3xl rounded-full`}
                   to="/lesson"
@@ -221,7 +221,7 @@ const HomePage = () => {
                 >
                   <LessonCard
                     lesson={lesson}
-                    isFavorite={(user.favorites || []).includes(lesson.id)}
+                    isFavorite={true}
                   />
                 </Link>
               ))}
