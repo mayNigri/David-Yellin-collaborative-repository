@@ -21,6 +21,7 @@ import { getDoc } from "firebase/firestore";
 import AdminPage from "./pages/admin";
 import { userRef } from "./constants/refs";
 import { CircleDashed as LoadingIndicator } from "lucide-react";
+import ForgotMyPasswordPage from "./pages/login/forgot-my-password";
 
 let init = false;
 let listener = null;
@@ -90,6 +91,7 @@ function App() {
                 <Route index element={<LoginPage />} />
                 <Route path="login" element={<LoginPage />} />
                 <Route path="register" element={<RegisterPage />} />
+                <Route path="forgot-my-password" element={<ForgotMyPasswordPage />} />
                 <Route path="*" element={<Navigate to="/login" />} />
               </>
             )}

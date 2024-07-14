@@ -12,6 +12,7 @@ import { Button } from '../../components/ui/button.jsx';
 import { searchUsersByName } from '../../constants/user-actions.js';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { Input } from '../../components/ui/input.jsx';
+import UserUpdateForm from '../../components/user-form.jsx';
 
 const UsersTab = () => {
     const [users, setUsers] = useState([]);
@@ -21,6 +22,7 @@ const UsersTab = () => {
     const [showUserModal, setShowUserModal] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const [searchText, setSearchText] = useState('');
+    const [showUpdateModal, setShowUpdateModal] = useState(null);
 
     useEffect(() => {
         fetchUsers();
@@ -66,11 +68,8 @@ const UsersTab = () => {
         setShowUserModal(false);
     };
 
-    const handleUpdateUser = async (id, updatedUser) => {
-        const userDoc = doc(firestore, 'users', id);
-        await updateDoc(userDoc, updatedUser);
-        fetchUsers();
-        setShowUserModal(false);
+    const handleUpdateUser = async (id) => {
+        setShowUpdateModal(id)
     };
 
     const handleSearch = async (e) => {
@@ -132,12 +131,12 @@ const UsersTab = () => {
             headerName: 'פעולות',
             width: 200,
             renderCell: (params) => (
-                <div>
-                    <Button onClick={() => openConfirmationModal('Are you sure you want to delete this user?', () => handleDeleteUser(params.row.id))}>Delete</Button>
+                <div className='flex gap-3'>
                     <Button onClick={() => {
-                        setCurrentUser(params.row);
-                        setShowUserModal(true);
-                    }}>Update</Button> </div>
+                        handleUpdateUser(params.row.id);
+                    }}>עדכון</Button>
+                    <Button onClick={() => openConfirmationModal('Are you sure you want to delete this user?', () => handleDeleteUser(params.row.id))} variant="destructive">מחיקה</Button>
+                </div>
             )
 
         }
@@ -191,6 +190,18 @@ const UsersTab = () => {
 
             <Modal show={showUserModal} onClose={() => setShowUserModal(false)}>
                 <UserForm onSubmit={currentUser ? (data) => handleUpdateUser(currentUser.id, data) : handleAddUser} initialData={currentUser} />
+            </Modal>
+
+            <Modal show={Boolean(showUpdateModal)} onClose={() => setShowUpdateModal(null)}>
+                <h1 className='pb-5'>עדכון משתמש</h1>
+                <UserUpdateForm uid={showUpdateModal} afterUpdate={(input) => setUsers(prev => {
+                    return prev.map((user) => {
+                        if (user.id === showUpdateModal) {
+                            return { ...user, ...input }
+                        }
+                        return user;
+                    })
+                })} />
             </Modal>
 
             <ConfirmationModal

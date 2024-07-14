@@ -119,9 +119,12 @@ const HomePage = () => {
 
             <Select onValueChange={(val) => searchForm.setValue("track", val)}>
               <SelectTrigger className="w-[180px] h-12 text-lg">
-                <SelectValue value={null} placeholder="מסלול" />
+                <SelectValue value={null} placeholder="מסלול (הכל)" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value={null}>
+                  הכל
+                </SelectItem>
                 {tracks.map((item) => {
                   return (
                     <SelectItem key={item} value={item}>
@@ -134,9 +137,12 @@ const HomePage = () => {
 
             <Select onValueChange={(val) => searchForm.setValue("_class", val)}>
               <SelectTrigger className="w-[180px] h-12 text-lg">
-                <SelectValue value={null} placeholder="חוג" />
+                <SelectValue value={null} placeholder="חוג (הכל)" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value={null}>
+                  הכל
+                </SelectItem>
                 {classes.map((item) => {
                   return (
                     <SelectItem key={item} value={item}>
@@ -149,9 +155,12 @@ const HomePage = () => {
 
             <Select onValueChange={(val) => searchForm.setValue("grade", val)}>
               <SelectTrigger className="w-[180px] h-12 text-lg">
-                <SelectValue value={null} placeholder="כיתה" />
+                <SelectValue value={null} placeholder="כיתה (הכל)" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value={null}>
+                  הכל
+                </SelectItem>
                 {grades.map((item) => {
                   return (
                     <SelectItem key={item} value={item}>

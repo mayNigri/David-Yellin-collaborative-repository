@@ -11,6 +11,7 @@ import LessonFormPage from '../lesson-form/index.jsx';
 import { Input } from '../../components/ui/input.jsx';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { searchLessonByName } from '../../constants/lesson-actions.js';
+import LessonForm from '../lesson-form/lesson-form.jsx';
 
 const LessonsTab = () => {
     const [lessons, setLessons] = useState([]);
@@ -19,6 +20,7 @@ const LessonsTab = () => {
     const [confirmationMessage, setConfirmationMessage] = useState('');
     const [onConfirmAction, setOnConfirmAction] = useState(null);
     const [searchText, setSearchText] = useState('');
+    const [showUpdateModal, setShowUpdateModal] = useState(null);
 
     useEffect(() => {
         fetchLessons();
@@ -59,11 +61,9 @@ const LessonsTab = () => {
     };
 
 
-    const handleUpdateLesson = async (id, updatedLesson) => {
-        const lessonDoc = doc(firestore, 'lessons', id);
-        await updateDoc(lessonDoc, updatedLesson);
-        fetchLessons();
-    }
+    const handleUpdateLesson = async (id) => {
+        setShowUpdateModal(id)
+    };
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -123,10 +123,9 @@ const LessonsTab = () => {
             headerName: 'פעולות',
             width: 200,
             renderCell: (params) => (
-                <div>
-                    <Button onClick={() => openConfirmationModal('Are you sure you want to delete this lesson?', () => handleDeleteLesson(params.row.id))}>Delete</Button>
-                    <Button onClick={() => handleUpdateLesson(params.row.id, { title: 'Updated Title', description: 'Updated Description' })}>Update</Button>
-
+                <div className='flex gap-3'>
+                    <Button onClick={() => handleUpdateLesson(params.row.id)}>עדכון</Button>
+                    <Button variant="destructive" onClick={() => openConfirmationModal('Are you sure you want to delete this lesson?', () => handleDeleteLesson(params.row.id))}>מחיקה</Button>
                 </div>
             )
 
@@ -181,6 +180,20 @@ const LessonsTab = () => {
 
             <Modal show={showLessonModal} onClose={() => setShowLessonModal(false)}>
                 <LessonFormPage navAfter={false} onSubmit={handleAddLesson} />
+            </Modal>
+
+            <Modal show={Boolean(showUpdateModal)} onClose={() => setShowUpdateModal(null)}>
+                <h1 className='pb-5'>עידכון מערך</h1>
+                <LessonForm navAfter={false} id={showUpdateModal}
+                    afterUpdate={(input) => setLessons(prev => {
+                        return prev.map((lesson) => {
+                            if (lesson.id === showUpdateModal) {
+                                return { ...lesson, ...input }
+                            }
+                            return lesson;
+                        })
+                    })}
+                />
             </Modal>
 
             <ConfirmationModal

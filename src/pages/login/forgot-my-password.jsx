@@ -1,5 +1,5 @@
 import { auth } from '../../services/firebase'
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
 import { getDoc, doc } from 'firebase/firestore'
 import { Button } from '../../components/ui/button';
 import { useForm } from 'react-hook-form';
@@ -14,7 +14,6 @@ import { useState } from 'react';
 
 const validator = z.object({
     email: z.string().email("יש להזין אימייל תקין"),
-    password: z.string().min(8, "סיסמא חייבת להיות באורך של 8 תווים לפחות"),
 })
 
 const WavyLine = () => (
@@ -30,7 +29,7 @@ const WavyLine = () => (
     </svg>
 )
 
-const LoginPage = () => {
+const ForgotMyPasswordPage = () => {
 
     const [loading, setLoading] = useState(false);
 
@@ -38,10 +37,11 @@ const LoginPage = () => {
         resolver: zodResolver(validator)
     });
 
-    const login = async ({ email, password }) => {
+    const login = async ({ email }) => {
         try {
             setLoading(true)
-            await signInWithEmailAndPassword(auth, email, password);
+            await sendPasswordResetEmail(auth, email);
+            alert("נשלחה הודעת אימייל לשחזור סיסמה")
         } catch (error) {
             console.log(error.message)
             alert("התרחשה שגיאה בעת התחברות, נסה שוב")
@@ -53,26 +53,21 @@ const LoginPage = () => {
         <div className="w-full min-h-screen flex items-center justify-center" style={{ backgroundColor: COLOR_WHITE }}>
 
             <div className="min-h-screen flex items-center justify-center w-1/2 flex-col space-y-2" style={{ backgroundColor: COLOR_WHITE }}>
-                <h1 className="text-3xl font-bold py-5">התחברות</h1>
+                <h1 className="text-3xl font-bold py-5">שכחתי סיסמה</h1>
+                <p>יש להזין את האימייל לשחזור סיסמה</p>
                 <form onSubmit={handleSubmit(login)} className="flex flex-col items-start justify-start max-w-[400px] space-y-5">
                     <div>
                         <Label htmlFor="email">אימייל *</Label>
                         <Input {...register('email', { required: true })} type="text" placeholder="אימייל" />
                         {errors.email && <p className='text-red-700'>{errors.email.message}</p>}
                     </div>
-                    <div>
-                        <Label htmlFor="password">סיסמה *</Label>
-                        <Input {...register('password', { required: true })} type="password" placeholder="סיסמה" />
-                        {errors.password && <p className='text-red-700'>{errors.password.message}</p>}
-                    </div>
 
                     <div className="flex flex-row space-x-reverse space-x-2 items-center">
-                        <Button loading={loading} className="bg-black p-2 text-white rounded-md">התחברות</Button>
+                        <Button loading={loading} className="bg-black p-2 text-white rounded-md">שלח לינק לאיפוס</Button>
                         <Link className="text-blue-500 hover:text-blue-700" to="/register">הרשמה</Link>
+                        <Link className="text-blue-500 hover:text-blue-700" to="/login">התחברות</Link>
+
                     </div>
-                    <Link to="/forgot-my-password">
-                        שכחתי את הסיסמה
-                    </Link>
                 </form>
             </div>
             <div className="wavy-line-container flex justify-center items-center h-full" style={{ height: '100%' }}>
@@ -87,4 +82,4 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage;
+export default ForgotMyPasswordPage;

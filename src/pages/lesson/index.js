@@ -1,7 +1,7 @@
-import { addDoc, arrayUnion, getDoc, getDocs, limit, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, deleteDoc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
 import { StarIcon } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { commentsRef, lessonRef, userRef } from "../../constants/refs";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserDoc, setUserDoc } from "../../redux/auth-slice";
@@ -13,13 +13,14 @@ import {
   removeFromFavorites,
 } from "../../constants/lesson-actions";
 import { Textarea } from "../../components/ui/textarea";
-import { Button } from "../../components/ui/button";
+import { Button, buttonVariants } from "../../components/ui/button";
 import { useForm } from "react-hook-form";
 import { Label } from "../../components/ui/label";
 import { getUserById } from '../../constants/user-actions'
 import NotFound from "../not-found";
 import LoadingIndicator from "../../components/loading-indicator";
 import Rating from "../../components/rating";
+import ConfirmationModal from "../../components/confirmation-modal";
 
 const LessonPage = () => {
   const lessonId = useParams().id;
@@ -30,6 +31,7 @@ const LessonPage = () => {
   const [creator, setCreator] = useState("")
   const [comments, setComments] = useState([]);
   const [postingComment, setIsPostingComment] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const user = useSelector(selectUserDoc);
   const dispatch = useDispatch();
@@ -100,7 +102,7 @@ const LessonPage = () => {
     commentForm.reset();
     setIsPostingComment(false);
   }
-
+  const navigate = useNavigate();
 
   if (loading) {
     return <div className="min-h-[calc(100vh-144px)] flex items-center justify-center">
@@ -116,13 +118,21 @@ const LessonPage = () => {
   const isFavorite = (user.favorites || []).includes(lessonId);
   const Fav = StarIcon;
 
+
   return (
     <div className="p-5 space-y-5 min-h-[calc(100vh-144px)] justify-center items-center flex flex-col">
+      <ConfirmationModal
+        show={Boolean(showConfirmationModal)}
+        onClose={() => setShowConfirmationModal(null)}
+        onConfirm={async () => {
+          await deleteDoc(lessonRef(showConfirmationModal));
+          navigate("/")
+        }}
+        message={"האם אתה בטוח שברצונך למחוק את מערך השיעור?"}
+      />
       <div className="space-y-5">
         <div className="border bg-white p-5 rounded-md shadow-lg">
-          <Link to={`/updatelesson/${lessonId}`}>
-            Update
-          </Link>
+
           <div className="flex gap-10 items-center justify-between">
             <h1>{lesson.name}</h1>
             <button className="flex space-x-2 space-x-reverse" onClick={handleAddOrRemoveFavorite}>
@@ -145,7 +155,7 @@ const LessonPage = () => {
             </div>
 
 
-            <div>{lesson.description}</div>
+            <div className="py-3">{lesson.description}</div>
           </div>
 
           {Boolean(lesson.fileUrl) && (
@@ -164,6 +174,14 @@ const LessonPage = () => {
               </div>
             </div>
           )}
+          <div className="w-full flex items-end justify-end gap-3">
+            <Link className={buttonVariants()} to={`/updatelesson/${lessonId}`}>
+              עריכה
+            </Link>
+            <Button variant="destructive" onClick={() => setShowConfirmationModal(lessonId)}>
+              מחיקה
+            </Button>
+          </div>
         </div>
 
         <div className="border bg-white p-5 rounded-md shadow-lg">
