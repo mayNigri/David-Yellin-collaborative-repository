@@ -86,8 +86,10 @@ const ReportsTab = () => {
     }
 
     return (
-        <div className="p-5 m-5">
-            <h2>Reports</h2>
+        <div className="admin-container">
+
+            <h2>דוחות</h2>
+            
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-row space-x-reverse space-x-2 items-center">
                 <Label>מתאריך: </Label>
                 <Input {...register("from", {
@@ -121,28 +123,26 @@ const ReportsTab = () => {
             <p>
                 משתמשים שנוצרו במערכת: {usersCreated_alltime}
             </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 gap-y-5">
-                <div className="h-96 w-96 ">
-                    <PieChart labels={Object.keys(usersByCollege)} values={Object.values(usersByCollege)} title={"משתמשים רשומים בכל מכללה"} />
+                <div className="grid grid-cols-2 gap-5">
+                    <div className="h-96 w-96">
+                        <PieChart labels={Object.keys(usersByCollege)} values={Object.values(usersByCollege)} title={"משתמשים רשומים בכל מכללה"} />
+                    </div>
+                    <div className="h-96 w-96">
+                        <PieChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנה"} />
+                    </div>
+                    <div className="h-96 w-96">
+                        <PieChart labels={Object.keys(lessonsByTrack)} values={Object.values(lessonsByTrack)} title={"שיעורים לפי מסלול"} />
+                    </div>
+                    <div className="h-96 w-96">
+                        <PieChart labels={Object.keys(lessonsByClass)} values={Object.values(lessonsByClass)} title={"שיעורים לפי כיתה"} />
+                    </div>
+                    <div className="h-96 w-96">
+                        <PieChart labels={Object.keys(lessonsByGrade)} values={Object.values(lessonsByGrade)} title={"שיעורים לפי חוג"} />
+                    </div>
+                    <div className="h-96 w-96">
+                        <BarChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנה"} />
+                    </div>
                 </div>
-                <div className="h-96 w-96">
-                    <PieChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנה"} />
-                </div>
-                <div className="h-96 w-96">
-                    <PieChart labels={Object.keys(lessonsByTrack)} values={Object.values(lessonsByTrack)} title={"שיעורים לפי מסלול"} />
-                </div>
-                <div className="h-96 w-96">
-                    <PieChart labels={Object.keys(lessonsByClass)} values={Object.values(lessonsByClass)} title={"שיעורים לפי כיתה"} />
-                </div>
-                <div className="h-96 w-96">
-                    <PieChart labels={Object.keys(lessonsByGrade)} values={Object.values(lessonsByGrade)} title={"שיעורים לפי חוג"} />
-                </div>
-                <div className="h-96 w-96">
-                    <BarChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנה"} />
-                </div>
-            </div>
-
         </div>
     )
 }

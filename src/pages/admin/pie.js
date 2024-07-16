@@ -76,8 +76,8 @@ const PieChart = ({labels, values, title}) => {
     return <>
     <h3 className="text-center">{title}</h3>
     <Pie
-    width={'400px'}
-    height={'400px'}
+    width={'384px'}
+    height={'384px'}
     data={{
         labels: labels.map((l, i) => `${l} (${values[i]})`),
         xLabels: labels,
