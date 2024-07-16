@@ -101,6 +101,8 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
         setLoading(false)
     };
 
+    console.log(user.uid);
+
     if (loading) {
         return <div className="flex items-center justify-center min-h-screen">
             <LoadingIndicator />
@@ -167,7 +169,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
                 {
                     !id ? (file && <p><b>שם הקובץ:</b> {file.name}</p>)
                         :
-                        <p>{defaultValues && Boolean(defaultValues.fileUrl) && defaultValues?.fileUrl.split(".").pop() || ""}</p>
+                        <p>{defaultValues && Boolean(defaultValues.fileUrl) && decodeURIComponent(defaultValues?.fileUrl.split(`${id}.`).pop().split("?alt")[0]) || ""}</p>
                 }
                 <input ref={fileRef} hidden type="file" onChange={async (e) => {
                     setFile(e.target.files[0] || null);
