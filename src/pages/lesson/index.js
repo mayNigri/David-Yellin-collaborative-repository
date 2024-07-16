@@ -22,6 +22,12 @@ import NotFound from "../not-found";
 import LoadingIndicator from "../../components/loading-indicator";
 import Rating from "../../components/rating";
 import ConfirmationModal from "../../components/confirmation-modal";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const validator = z.object({
+  comment: z.string().min(3, "התגובה חייבת להכיל לפחות 3 תווים")
+});
 
 const LessonPage = () => {
   const lessonId = useParams().id;
@@ -36,6 +42,8 @@ const LessonPage = () => {
 
   const user = useSelector(selectUserDoc);
   const dispatch = useDispatch();
+
+
 
   const getLessonDoc = async () => {
     setError(null);
@@ -83,6 +91,7 @@ const LessonPage = () => {
   };
 
   const commentForm = useForm({
+    resolver: zodResolver(validator),
     defaultValues: {
       comment: ""
     },
@@ -90,10 +99,6 @@ const LessonPage = () => {
   })
 
   const onPostComment = async (input) => {
-
-    if (input.comment.trim().length < 3) {
-      return;
-    }
     // post comment
     try {
       setIsPostingComment(true)
@@ -193,6 +198,7 @@ const LessonPage = () => {
           <form onSubmit={commentForm.handleSubmit(onPostComment)} className="flex flex-col items-start space-y-2">
             <Label>הוספת תגובה</Label>
             <Textarea {...commentForm.register("comment")} className="w-[500px]" />
+            {commentForm.formState.errors.comment && <p className="text-red-600">{commentForm.formState.errors.comment.message}</p>}
             <Button loading={postingComment}>שליחה</Button>
           </form>
 
