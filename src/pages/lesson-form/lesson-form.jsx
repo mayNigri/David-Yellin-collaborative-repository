@@ -86,6 +86,9 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
         else {
             const lessonDoc = await createLesson(user.uid, input);
 
+            const fileUrl = await uploadFileAndGetUrl(file, `/lessons/${user.uid}/${lessonDoc.id}.${file.name}`);
+            await updateLesson(lessonDoc.id, { fileUrl })
+
             if (navAfter) {
                 navigate(`/lesson/${lessonDoc.id}`)
             }
