@@ -21,6 +21,7 @@ import { lessonRef, lessonsRef } from '../../constants/refs'
 import { uploadFileAndGetUrl } from "../../services/firebase";
 import { useRef, useState } from "react";
 import { createLesson, getLessonById, updateLesson } from "../../constants/lesson-actions";
+import LoadingIndicator from "../../components/loading-indicator";
 
 const validator = z.object({
     track: z.enum(tracks, { required_error: 'אנא בחר מסלול' }),
@@ -36,7 +37,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
     const user = useSelector(selectUser);
     const navigate = useNavigate();
     const [file, setFile] = useState(null);
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const fileRef = useRef(null);
 
@@ -49,8 +50,16 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
         resolver: zodResolver(validator),
         defaultValues: id ? async () => {
             const lessonDoc = await getLessonById(id);
+            setLoading(false)
             return lessonDoc;
-        } : undefined
+        } : {
+            track: "",
+            class: "",
+            grade: "",
+            description: "",
+            name: "",
+            fileUrl: ""
+        }
     });
 
     const onSubmit = async (input) => {
@@ -71,7 +80,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
             }
 
             if (navAfter) {
-                navigate(`/lessons/${id}`)
+                navigate(`/lesson/${id}`)
             }
 
         }
@@ -79,7 +88,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
             const lessonDoc = await createLesson(user.uid, input);
 
             if (navAfter) {
-                navigate(`/lessons/${lessonDoc.id}`)
+                navigate(`/lesson/${lessonDoc.id}`)
             }
         }
 
@@ -87,6 +96,12 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
 
         setLoading(false)
     };
+
+    if (loading) {
+        return <div className="flex items-center justify-center min-h-screen">
+            <LoadingIndicator />
+        </div>
+    }
 
     return (
         <form
@@ -99,7 +114,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
             </div>
             <div>
                 <Label>מסלול</Label>
-                <Select value={defaultValues ? defaultValues.track : undefined} onValueChange={(val) => setValue("track", val)}>
+                <Select defaultValue={defaultValues.track} onValueChange={(val) => setValue("track", val)}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="אנא בחר" />
                     </SelectTrigger>
@@ -112,7 +127,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
             </div>
             <div>
                 <Label htmlFor="class">חוג</Label>
-                <Select value={defaultValues ? defaultValues.class : undefined} onValueChange={(val) => setValue("class", val)}>
+                <Select defaultValue={defaultValues.class} onValueChange={(val) => setValue("class", val)}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue className="w-full" placeholder="אנא בחר" />
                     </SelectTrigger>
@@ -125,7 +140,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
             </div>
             <div>
                 <Label>כיתה</Label>
-                <Select value={defaultValues ? defaultValues.grade : undefined} onValueChange={(val) => setValue("grade", val)}>
+                <Select defaultValue={defaultValues.grade} onValueChange={(val) => setValue("grade", val)}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="אנא בחר" />
                     </SelectTrigger>
