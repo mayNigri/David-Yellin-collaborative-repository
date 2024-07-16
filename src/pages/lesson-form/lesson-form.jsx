@@ -58,7 +58,6 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
             grade: "",
             description: "",
             name: "",
-            fileUrl: ""
         }
     });
 
@@ -105,7 +104,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
 
     return (
         <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onSubmit, (err) => console.log(err))}
             className="gap-5 grid grid-cols-2 max-w-[500px]"
         >
             <div>
