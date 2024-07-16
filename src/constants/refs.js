@@ -8,7 +8,7 @@ export const userRef = (id) => doc(collection(firestore, "users"), id);
 export const commentsRef = (lessonId) => collection(lessonRef(lessonId), "comments");
 export const commentRef = (lessonId, commentId) => doc(commentsRef(lessonId), commentId);
 export const notificationsRef = (uid) => collection(firestore, doc(firestore, "users", uid).path, "notifications")
-export const notificationsQuery = (uid, _limit = 20) => query(collection(firestore, doc(firestore, "users", uid).path, "notifications"), orderBy("createdAt"), limit(_limit))
+export const notificationsQuery = (uid, _limit = 8) => query(collection(firestore, doc(firestore, "users", uid).path, "notifications"), orderBy("createdAt", "desc"), limit(_limit))
 
 
 const ITEMS_PER_PAGE = 8;
