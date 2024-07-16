@@ -37,7 +37,7 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
     const user = useSelector(selectUser);
     const navigate = useNavigate();
     const [file, setFile] = useState(null);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(id ? true : false)
 
     const fileRef = useRef(null);
 
