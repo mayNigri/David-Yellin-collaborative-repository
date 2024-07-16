@@ -90,6 +90,10 @@ const LessonPage = () => {
   })
 
   const onPostComment = async (input) => {
+
+    if (input.comment.trim().length < 3) {
+      return;
+    }
     // post comment
     try {
       setIsPostingComment(true)
