@@ -6,16 +6,17 @@ import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { useForm } from "react-hook-form";
 import { count_users_by_college, count_users_by_year } from "../../constants/reports-data";
-import { Chart, ArcElement } from "chart.js";
+import { Chart, ArcElement, CategoryScale, LinearScale, BarElement } from "chart.js";
 import { Doughnut, Pie } from "react-chartjs-2";
 import PieChart from "./pie";
+import BarChart from './bars'
 
 const queryLessonsByCreateTime = (from, to) => query(lessonsRef, where("createdAt", ">=", new Date(from)), where("createdAt", "<=", new Date(to)));
 const queryUsersByCreateTime = (from, to) => query(usersRef, where("createdAt", ">=", new Date(from)), where("createdAt", "<=", new Date(to)));
+Chart.register(CategoryScale);
 Chart.register(ArcElement);
-
-
-
+Chart.register(LinearScale);
+Chart.register(BarElement);
 
 const ReportsTab = () => {
 
@@ -111,6 +112,9 @@ const ReportsTab = () => {
                 </div>
                 <div className="h-96 w-96">
                     <PieChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנה"} />
+                </div>
+                <div className="h-96 w-96">
+                    <BarChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנה"} />
                 </div>
             </div>
 
