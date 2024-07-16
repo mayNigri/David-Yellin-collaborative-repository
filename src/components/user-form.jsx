@@ -60,7 +60,7 @@ const UserUpdateForm = ({ uid, afterUpdate }) => {
             </div>
             <div>
                 <Label>מסלול</Label>
-                <Select value={defaultValues.track} onValueChange={(val) => setValue('track', val)}>
+                <Select defaultValue={defaultValues.track} onValueChange={(val) => setValue('track', val)}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="אנא בחר" />
                     </SelectTrigger>
