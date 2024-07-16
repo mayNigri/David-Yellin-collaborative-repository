@@ -26,7 +26,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const validator = z.object({
-  comment: z.string().min(3, "התגובה חייבת להכיל לפחות 3 תווים")
+  comment: z.string().trim().min(3, "התגובה חייבת להכיל לפחות 3 תווים")
 });
 
 const LessonPage = () => {
