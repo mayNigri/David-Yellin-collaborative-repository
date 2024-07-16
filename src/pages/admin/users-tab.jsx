@@ -145,13 +145,7 @@ const UsersTab = () => {
 
     return (
         <div className="admin-container">
-            <div className='w-full flex items-center justify-between'>
-
-                <h2>משתמשים רשומים</h2>
-                <div className="admin-inputs">
-                    <button onClick={() => setShowUserModal(true)}>משתמש חדש</button>
-                </div>
-            </div>
+            <h2>משתמשים רשומים</h2>
 
             <form onSubmit={handleSearch} className="flex items-center relative py-5 max-w-[300px] gap-5">
                 <Input
@@ -194,14 +188,18 @@ const UsersTab = () => {
 
             <Modal show={Boolean(showUpdateModal)} onClose={() => setShowUpdateModal(null)}>
                 <h1 className='pb-5'>עדכון משתמש</h1>
-                <UserUpdateForm uid={showUpdateModal} afterUpdate={(input) => setUsers(prev => {
-                    return prev.map((user) => {
-                        if (user.id === showUpdateModal) {
-                            return { ...user, ...input }
-                        }
-                        return user;
+                <UserUpdateForm uid={showUpdateModal} afterUpdate={(input) => {
+                    setUsers(prev => {
+                        return prev.map((user) => {
+                            if (user.id === showUpdateModal) {
+                                return { ...user, ...input }
+                            }
+                            return user;
+                        })
                     })
-                })} />
+
+                    setShowUpdateModal(null);
+                }} />
             </Modal>
 
             <ConfirmationModal

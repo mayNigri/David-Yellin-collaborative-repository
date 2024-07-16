@@ -15,7 +15,6 @@ import LessonForm from '../lesson-form/lesson-form.jsx';
 
 const LessonsTab = () => {
     const [lessons, setLessons] = useState([]);
-    const [showLessonModal, setShowLessonModal] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [confirmationMessage, setConfirmationMessage] = useState('');
     const [onConfirmAction, setOnConfirmAction] = useState(null);
@@ -136,12 +135,7 @@ const LessonsTab = () => {
     return (
         <div className="admin-container">
 
-            <div className='w-full flex items-center justify-between'>
-                <h2>מערכי שיעור</h2>
-                <div className="admin-inputs">
-                    <button onClick={() => setShowLessonModal(true)}>מערך חדש</button>
-                </div>
-            </div>
+            <h2>מערכי שיעור</h2>
 
             <form onSubmit={handleSearch} className="flex items-center relative py-5 max-w-[300px] gap-5">
                 <Input
@@ -185,14 +179,17 @@ const LessonsTab = () => {
             <Modal show={Boolean(showUpdateModal)} onClose={() => setShowUpdateModal(null)}>
                 <h1 className='pb-5'>עידכון מערך</h1>
                 <LessonForm navAfter={false} id={showUpdateModal}
-                    afterUpdate={(input) => setLessons(prev => {
-                        return prev.map((lesson) => {
-                            if (lesson.id === showUpdateModal) {
-                                return { ...lesson, ...input }
-                            }
-                            return lesson;
+                    afterUpdate={(input) => {
+                        setLessons(prev => {
+                            return prev.map((lesson) => {
+                                if (lesson.id === showUpdateModal) {
+                                    return { ...lesson, ...input }
+                                }
+                                return lesson;
+                            })
                         })
-                    })}
+                        setShowUpdateModal(null);
+                    }}
                 />
             </Modal>
 
