@@ -1,4 +1,4 @@
-import { getDoc } from "firebase/firestore";
+import { getDoc, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import LessonCard from "../../components/lesson-card";
 import { useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import { selectUserDoc } from "../../redux/auth-slice";
 import { Button, buttonVariants } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { lessonRef, lessonsRef } from "../../constants/refs";
+import { getLessonsByPageQuery, lessonRef, lessonsRef } from "../../constants/refs";
 import { Link } from "react-router-dom";
 import {
   getMyLessons,
@@ -31,6 +31,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../../components/ui/tooltip"
+import LessonsSection from "./lessons-section";
 
 
 const validator = z.object({
@@ -62,9 +63,23 @@ const HomePage = () => {
     }
   });
 
+  const [lastFilters, setLastFilters] = useState({
+    track: undefined,
+    _class: undefined,
+    grade: undefined
+  })
+
+  const watchFields = searchForm.watch()
+
   const [lessons, setLessons] = useState([]);
+  const [lessonsCount, setLessonsCount] = useState(0);
+  const [lessonsPage, setLessonsPage] = useState(0);
+
   const [myLessons, setMyLessons] = useState([]);
+  const [myLessonsCount, setMyLessonsCount] = useState(0);
+
   const [favlessons, setFavLessons] = useState([]);
+  const [favlessonsCount, setFavlessonsCount] = useState(0);
 
   useEffect(() => {
     handleGetMyLessons()
@@ -83,15 +98,29 @@ const HomePage = () => {
   }, []);
 
   const handleGetMyLessons = async () => {
-    const docs = await getMyLessons(user.id);
-    setMyLessons(docs);
+    const docs = await getLessonsByPageQuery(myLessons.length === 0 ? undefined : myLessons.at(-1).createdAt, where("uid", "==", user.id));
+    setMyLessonsCount(docs.count);
+    setMyLessons(prev => prev.concat(docs.docs));
   };
 
   const handleGetLessonsByFilter = async (input) => {
     setIsSearching(true);
     try {
-      const docs = await getLessonsByFilter(input);
-      setLessons(docs);
+      const q = await getLessonsByFilter(input);
+      setLessons(q);
+      setLessonsCount(q.length);
+    } catch (e) {
+      console.log(e);
+    }
+    setIsSearching(false);
+  };
+
+  const handleGetLessonsByFilterFetchMore = async () => {
+    setIsSearching(true);
+    try {
+      const q = getLessonsByFilter(lastFilters);
+      const { docs } = await getLessonsByPageQuery(lessons.length === 0 ? undefined : lessons.at(-1).createdAt, ...q);
+      setLessons(prev => prev.concat(docs));
     } catch (e) { }
     setIsSearching(false);
   };
@@ -202,65 +231,33 @@ const HomePage = () => {
 
         </div>
 
-        {lessons.length > 0 &&
-          <>
-            <h2 className="py-5">תוצאות חיפוש</h2>
-            <div id="divider" className="border-b border-slate-300 mb-5"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-5">
-              {lessons.map((lesson) => (
-                <Link
-                  key={lesson.id}
-                  className="w-fit border rounded-lg"
-                  to={`/lesson/${lesson.id}`}
-                >
-                  <LessonCard
-                    lesson={lesson}
-                    isFavorite={(user.favorites || []).includes(lesson.id)}
-                  />
-                </Link>
-              ))}
-            </div>
-          </>}
+        {lessons.length > 0 && (
+          <LessonsSection title="תוצאות חיפוש" lessons={lessons.slice(0, lessonsPage * 8 + 8)} count={lessonsCount} onPressFetchMore={() => {
+            setLessonsPage(prev => prev + 1);
+          }} />
+        )}
 
         {favlessons.length > 0 && (
-          <div>
-            <h2 className="py-5">המועדפים שלי</h2>
-            <div id="divider" className="border-b border-slate-300 mb-5"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {favlessons.map((lesson) => (
-                <Link
-                  className="w-fit border rounded-lg"
-                  to={`/lesson/${lesson.id}`}
-                >
-                  <LessonCard
-                    lesson={lesson}
-                    isFavorite={true}
-                  />
-                </Link>
-              ))}
-            </div>
-          </div>
+          <LessonsSection title="המועדפים שלי" lessons={favlessons} count={user.favorites.length} onPressFetchMore={() => {
+            const q2 = (user.favorites || [])
+              .map((id) => getDoc(lessonRef(id)));
+
+            Promise.all(q2).then((docs) => {
+              setFavLessons(
+                docs.map((d) => d.exists() ? ({
+                  ...d.data(),
+                  id: d.id,
+                }) : undefined).filter((d) => d)
+              );
+            });
+          }} />
         )}
 
         {myLessons.length > 0 ?
-          <>
-            <h2 className="py-5">המערכים שלי</h2>
-            <div id="divider" className="border-b border-slate-300 mb-5"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-5">
-              {myLessons.map((lesson) => (
-                <Link
-                  key={lesson.id}
-                  className="w-fit border rounded-lg"
-                  to={`/lesson/${lesson.id}`}
-                >
-                  <LessonCard
-                    lesson={lesson}
-                    isFavorite={(user.favorites || []).includes(lesson.id)}
-                  />
-                </Link>
-              ))}
-            </div>
-          </> :
+          <LessonsSection title="המערכים שלי" lessons={myLessons} count={myLessonsCount} onPressFetchMore={() => {
+            handleGetMyLessons();
+          }} />
+          :
           <div className="text-xl">
             <Link className="text-blue-500 hover:text-blue-700 font-bold" to="/lesson">לחץ כאן</Link> כדי ליצור את המערך הראשון שלך
           </div>

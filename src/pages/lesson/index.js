@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUserDoc, setUserDoc } from "../../redux/auth-slice";
 import {
   addToFavorites,
+  deleteLesson,
   getLessonById,
   getLessonComments,
   postComment,
@@ -125,7 +126,7 @@ const LessonPage = () => {
         show={Boolean(showConfirmationModal)}
         onClose={() => setShowConfirmationModal(null)}
         onConfirm={async () => {
-          await deleteDoc(lessonRef(showConfirmationModal));
+          await deleteLesson(showConfirmationModal);
           navigate("/")
         }}
         message={"האם אתה בטוח שברצונך למחוק את מערך השיעור?"}

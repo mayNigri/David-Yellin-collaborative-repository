@@ -61,13 +61,6 @@ const UsersTab = () => {
         setShowConfirmationModal(false);
     };
 
-    const handleAddUser = async (user) => {
-        const usersCollection = collection(firestore, 'users');
-        await addDoc(usersCollection, user);
-        fetchUsers();
-        setShowUserModal(false);
-    };
-
     const handleUpdateUser = async (id) => {
         setShowUpdateModal(id)
     };
@@ -77,7 +70,6 @@ const UsersTab = () => {
         const result = await searchUsersByName(searchText);
         setUsers(result);
     }
-
 
     const columns = [
         {
@@ -181,10 +173,6 @@ const UsersTab = () => {
                     disableRowSelectionOnClick
                 />
             </div>
-
-            <Modal show={showUserModal} onClose={() => setShowUserModal(false)}>
-                <UserForm onSubmit={currentUser ? (data) => handleUpdateUser(currentUser.id, data) : handleAddUser} initialData={currentUser} />
-            </Modal>
 
             <Modal show={Boolean(showUpdateModal)} onClose={() => setShowUpdateModal(null)}>
                 <h1 className='pb-5'>עדכון משתמש</h1>

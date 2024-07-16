@@ -10,7 +10,7 @@ import { Button } from '../../components/ui/button.jsx';
 import LessonFormPage from '../lesson-form/index.jsx';
 import { Input } from '../../components/ui/input.jsx';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { searchLessonByName } from '../../constants/lesson-actions.js';
+import { deleteLesson, searchLessonByName } from '../../constants/lesson-actions.js';
 import LessonForm from '../lesson-form/lesson-form.jsx';
 
 const LessonsTab = () => {
@@ -33,8 +33,7 @@ const LessonsTab = () => {
 
 
     const handleDeleteLesson = async (id) => {
-        const lessonDoc = doc(firestore, 'lessons', id);
-        await deleteDoc(lessonDoc);
+        await deleteLesson(id);
         fetchLessons();
     };
 
@@ -50,13 +49,6 @@ const LessonsTab = () => {
             onConfirmAction();
         }
         setShowConfirmationModal(false);
-    };
-
-    const handleAddLesson = async (lesson) => {
-        const lessonsCollection = collection(firestore, 'lessons');
-        await addDoc(lessonsCollection, lesson);
-        fetchLessons();
-        setShowLessonModal(false);
     };
 
 
@@ -171,10 +163,6 @@ const LessonsTab = () => {
                     disableRowSelectionOnClick
                 />
             </div>
-
-            <Modal show={showLessonModal} onClose={() => setShowLessonModal(false)}>
-                <LessonFormPage navAfter={false} onSubmit={handleAddLesson} />
-            </Modal>
 
             <Modal show={Boolean(showUpdateModal)} onClose={() => setShowUpdateModal(null)}>
                 <h1 className='pb-5'>עידכון מערך</h1>

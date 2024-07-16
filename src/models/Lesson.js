@@ -1,3 +1,4 @@
+import { deleteLesson } from '../constants/lesson-actions';
 import { firestore } from '../services/firebase';
 import { addDoc, collection, getDoc, doc, query, getDocs, limit, deleteDoc, updateDoc } from 'firebase/firestore';
 
@@ -136,9 +137,7 @@ export class Lesson {
     }
 
     static async deleteLessonById(id) {
-        const lessonDocRef = doc(firestore, `${collectionRef.path}/${id}`)
-        const response = await deleteDoc(lessonDocRef)
-        return response;
+        const response = await deleteLesson(id)
     }
 
     /**
