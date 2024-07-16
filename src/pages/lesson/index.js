@@ -172,15 +172,14 @@ const LessonPage = () => {
             <div className="py-5 flex gap-2">
               <a
                 href={lesson.fileUrl}
-                download={lesson.fileUrl.split("/").pop()}
-                target="_blank"
+                download={decodeURIComponent(lesson.fileUrl.split(`${lesson.id}.`).pop().split("?alt")[0])}
                 className="bg-black p-2 text-white rounded-md"
               >
                 הורדת שיעור
               </a>
               <div>
-                <b>פורמט: </b>
-                {lesson.fileUrl.split(".").pop().split("?")[0]}
+                <p><b>שם הקובץ: </b>{decodeURIComponent(lesson.fileUrl.split(`${lesson.id}.`).pop().split("?alt")[0])}</p>
+
               </div>
             </div>
           )}
