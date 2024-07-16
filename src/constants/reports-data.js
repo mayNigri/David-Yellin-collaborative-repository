@@ -31,4 +31,35 @@ export const count_users_by_year = async (usersDocs) => {
             [data.year]: (prev[data.year] || 0) + 1
         }
     }, {});
+
+}
+
+export const count_lessons_by_track = async (lessonsDocs) => {
+    return lessonsDocs.reduce((prev, cur) => {
+        const data = cur.data();
+            return {
+                ...prev,
+                [data.track]: (prev[data.track] || 0) + 1
+            };
+    }, {});
+}
+
+export const count_lessons_by_class = async (lessonsDocs) => {
+    return lessonsDocs.reduce((prev, cur) => {
+        const data = cur.data();
+            return {
+                ...prev,
+                [data.class]: (prev[data.class] || 0) + 1
+            };
+    }, {});
+}
+
+export const count_lessons_by_grade = async (lessonsDocs, grades) => {
+    return lessonsDocs.reduce((prev, cur) => {
+        const data = cur.data();
+            return {
+                ...prev,
+                [data.grade]: (prev[data.grade] || 0) + 1
+            };
+    }, {});
 }

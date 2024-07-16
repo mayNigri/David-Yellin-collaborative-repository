@@ -5,7 +5,7 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { useForm } from "react-hook-form";
-import { count_users_by_college, count_users_by_year } from "../../constants/reports-data";
+import { count_users_by_college, count_users_by_year, count_lessons_by_class, count_lessons_by_grade, count_lessons_by_track } from "../../constants/reports-data";
 import { Chart, ArcElement } from "chart.js";
 import { Doughnut, Pie } from "react-chartjs-2";
 import PieChart from "./pie";
@@ -19,10 +19,15 @@ Chart.register(ArcElement);
 
 const ReportsTab = () => {
 
-    const [lessonsCreated, setLessonsCreated] = useState(0);
     const [usersCreated, setUsersCreated] = useState(0);
     const [usersByCollege, setUsersByCollege] = useState({});
     const [usersByYear, setUsersByYear] = useState({});
+    
+    const [lessonsCreated, setLessonsCreated] = useState(0);
+    const [lessonsByTrack, setLessonsByTrack] = useState({});
+    const [lessonsByClass, setLessonsByClass] = useState({});
+    const [lessonsByGrade, setLessonsByGrade] = useState({});
+
     const [loading, setLoading] = useState(true)
 
     const [lessonsCreated_alltime, setLessonsCreated_alltime] = useState(0);
@@ -40,6 +45,10 @@ const ReportsTab = () => {
         return users.docs;
     }
 
+    const getLessons = async () => {
+        const lessons = await getDocs(lessonsRef);
+        return lessons.docs;
+    }
 
     useEffect(() => {
         getCountFromServer(query(lessonsRef))
@@ -51,6 +60,13 @@ const ReportsTab = () => {
         getUsers().then((docs) => {
             count_users_by_college(docs).then((data) => setUsersByCollege(data));
             count_users_by_year(docs).then((data) => setUsersByYear(data));
+        })
+            .then(() => setLoading(false))
+
+        getLessons().then((docs) => {
+            count_lessons_by_track(docs).then((data) => setLessonsByTrack(data));
+            count_lessons_by_class(docs).then((data) => setLessonsByClass(data));
+            count_lessons_by_grade(docs).then((data) => setLessonsByGrade(data));
         })
             .then(() => setLoading(false))
 
@@ -69,7 +85,7 @@ const ReportsTab = () => {
     }
 
     return (
-        <div>
+        <div className="p-5 m-5">
             <h2>Reports</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-row space-x-reverse space-x-2 items-center">
                 <Label>מתאריך: </Label>
@@ -105,12 +121,21 @@ const ReportsTab = () => {
                 משתמשים שנוצרו במערכת: {usersCreated_alltime}
             </p>
 
-            <div className="space-y-5 space-y-reverse flex gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 gap-y-5">
                 <div className="h-96 w-96 ">
                     <PieChart labels={Object.keys(usersByCollege)} values={Object.values(usersByCollege)} title={"משתמשים רשומים בכל מכללה"} />
                 </div>
                 <div className="h-96 w-96">
                     <PieChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנה"} />
+                </div>
+                <div className="h-96 w-96">
+                    <PieChart labels={Object.keys(lessonsByTrack)} values={Object.values(lessonsByTrack)} title={"שיעורים לפי מסלול"} />
+                </div>
+                <div className="h-96 w-96">
+                    <PieChart labels={Object.keys(lessonsByClass)} values={Object.values(lessonsByClass)} title={"שיעורים לפי כיתה"} />
+                </div>
+                <div className="h-96 w-96">
+                    <PieChart labels={Object.keys(lessonsByGrade)} values={Object.values(lessonsByGrade)} title={"שיעורים לפי חוג"} />
                 </div>
             </div>
 
