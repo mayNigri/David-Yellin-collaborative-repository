@@ -24,13 +24,13 @@ const ReportsTab = () => {
     const [lessonsDocs, setLessonsDocs] = useState([]);
     const [datesRange, setDatesRange] = useState([new Date(0).getTime(), new Date().getTime()])
 
-    const usersCreated = useMemo(() => usersDocs.length, [usersDocs, datesRange]);
+    const usersCreated = useMemo(() => usersDocs.filter((doc) => doc.data().createdAt.toMillis() < datesRange[1] && doc.data().createdAt.toMillis() > datesRange[0]).length, [usersDocs, datesRange]);
     const usersByYear = useMemo(() => count_users_by_year(usersDocs), [usersDocs, datesRange]);
     const usersByCollege = useMemo(() => count_users_by_college(usersDocs), [usersDocs, datesRange]);
     const lessonsByTrack = useMemo(() => count_lessons_by_track(lessonsDocs.filter((doc) => doc.data().createdAt.toMillis() < datesRange[1] && doc.data().createdAt.toMillis() > datesRange[0]), [lessonsDocs, datesRange]));
     const lessonsByClass = useMemo(() => count_lessons_by_class(lessonsDocs.filter((doc) => doc.data().createdAt.toMillis() < datesRange[1] && doc.data().createdAt.toMillis() > datesRange[0]), [lessonsDocs, datesRange]));
     const lessonsByGrade = useMemo(() => count_lessons_by_grade(lessonsDocs.filter((doc) => doc.data().createdAt.toMillis() < datesRange[1] && doc.data().createdAt.toMillis() > datesRange[0]), [lessonsDocs, datesRange]));
-    const lessonsCreated = useMemo(() => lessonsDocs.length, [lessonsDocs, datesRange]);
+    const lessonsCreated = useMemo(() => lessonsDocs.filter((doc) => doc.data().createdAt.toMillis() < datesRange[1] && doc.data().createdAt.toMillis() > datesRange[0]).length, [lessonsDocs, datesRange]);
 
     const [loading, setLoading] = useState(true)
 

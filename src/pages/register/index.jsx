@@ -6,7 +6,7 @@ import { Button } from '../../components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { classes, grades, tracks } from '../../constants/lesson-constants';
+import { classes, tracks } from '../../constants/lesson-constants';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { COLOR_WHITE, COLOR_YELLOW, COLOR_BLUE } from '../../lib/utils'
