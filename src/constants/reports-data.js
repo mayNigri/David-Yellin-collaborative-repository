@@ -13,7 +13,7 @@ export const count_lessons = async (college) => {
     return cnt._data.count.integerValue;
 }
 
-export const count_users_by_college = async (usersDocs) => {
+export const count_users_by_college = (usersDocs) => {
     return usersDocs.reduce((prev, cur) => {
         const data = cur.data();
         return {
@@ -23,7 +23,7 @@ export const count_users_by_college = async (usersDocs) => {
     }, {});
 }
 
-export const count_users_by_year = async (usersDocs) => {
+export const count_users_by_year = (usersDocs) => {
     return usersDocs.reduce((prev, cur) => {
         const data = cur.data();
         return {
@@ -34,7 +34,7 @@ export const count_users_by_year = async (usersDocs) => {
 
 }
 
-export const count_lessons_by_track = async (lessonsDocs) => {
+export const count_lessons_by_track = (lessonsDocs) => {
     return lessonsDocs.reduce((prev, cur) => {
         const data = cur.data();
             return {
@@ -44,7 +44,7 @@ export const count_lessons_by_track = async (lessonsDocs) => {
     }, {});
 }
 
-export const count_lessons_by_class = async (lessonsDocs) => {
+export const count_lessons_by_class = (lessonsDocs) => {
     return lessonsDocs.reduce((prev, cur) => {
         const data = cur.data();
             return {
@@ -54,7 +54,7 @@ export const count_lessons_by_class = async (lessonsDocs) => {
     }, {});
 }
 
-export const count_lessons_by_grade = async (lessonsDocs, grades) => {
+export const count_lessons_by_grade = (lessonsDocs, grades) => {
     return lessonsDocs.reduce((prev, cur) => {
         const data = cur.data();
             return {

@@ -65,7 +65,7 @@ const RegisterForm = () => {
         setfirebaseError(null);
         try {
             const { user } = await createUserWithEmailAndPassword(auth, email, password)
-
+            
             // Save User Information In Firestore
             const userDoc = await setDoc(doc(firestore, "users", user.uid), {
                 id: user.uid,
