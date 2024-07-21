@@ -211,7 +211,7 @@ const LessonPage = () => {
 
               </div>
               <div>
-                {(lesson.uid === user.id || user.role === 'admin') && <Button variant="destructive" onClick={async () => {
+                {(comment.uid === user.id || user.role === 'admin') && <Button variant="destructive" onClick={async () => {
                   await deleteDoc(commentRef(lessonId, comment.id))
                   setComments(prev => prev.filter(c => c.id !== comment.id))
                 }}>מחק</Button>}
