@@ -133,7 +133,7 @@ const UsersTab = () => {
                     <Button onClick={() => {
                         handleUpdateUser(params.row.id);
                     }}>עדכון</Button>
-                    <Button onClick={() => openConfirmationModal('Are you sure you want to delete this user?', () => handleDeleteUser(params.row.id))} variant="destructive">מחיקה</Button>
+                    <Button disabled={user.id === params.row.id} onClick={() => openConfirmationModal('Are you sure you want to delete this user?', () => handleDeleteUser(params.row.id))} variant="destructive">מחיקה</Button>
                 </div>
             )
 
@@ -143,7 +143,7 @@ const UsersTab = () => {
 
     return (
         <div className="admin-container">
-            
+
             <h2>משתמשים רשומים</h2>
 
             <form onSubmit={handleSearch} className="flex items-center relative py-5 max-w-[300px] gap-5">
