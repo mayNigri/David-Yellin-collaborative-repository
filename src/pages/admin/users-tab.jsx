@@ -13,8 +13,13 @@ import { searchUsersByName } from '../../constants/user-actions.js';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { Input } from '../../components/ui/input.jsx';
 import UserUpdateForm from '../../components/user-form.jsx';
+import { useSelector } from 'react-redux';
+import { selectUserDoc } from '../../redux/auth-slice.js';
 
 const UsersTab = () => {
+
+    const user = useSelector(selectUserDoc);
+
     const [users, setUsers] = useState([]);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [confirmationMessage, setConfirmationMessage] = useState('');
@@ -112,6 +117,7 @@ const UsersTab = () => {
             width: 50,
             renderCell: (params) => (
                 <input
+                    disabled={user.id === params.row.id}
                     type="checkbox"
                     checked={params.row.role === 'admin'}
                     onChange={(e) => handleRoleChange(params.row.id, e.target.checked)}

@@ -155,7 +155,7 @@ const RegisterForm = () => {
 
             <div>
                 <Label htmlFor="year">שנה אקדמית</Label>
-                <Input {...register("year", { required: true, setValueAs(val) { return Number(val) } })} type="number" placeholder="שנה אקדמית" />
+                <Input {...register("year", { required: true, valueAsNumber: true, min: 1, max: 6 })} min={1} max={6} type="number" placeholder="שנה אקדמית" />
             </div>
 
             <div className="flex flex-col items-center w-full">

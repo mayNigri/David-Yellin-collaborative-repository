@@ -17,6 +17,31 @@ import { getUserById } from '../constants/user-actions';
 import LoadingIndicator from './loading-indicator';
 import { useDispatch } from 'react-redux';
 import { setUserDoc } from '../redux/auth-slice';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const validator = z.object({
+    email: z.string({
+        required_error: "יש להזין אימייל"
+    }).email("יש להזין אימייל תקין"),
+    password: z.string({
+        required_error: "יש להזין סיסמה"
+    }).min(8, "הסיסמה חייבת להיות באורך של 8 תווים לפחות"),
+    fullName: z.string({
+        required_error: "יש להזין שם מלא"
+    }),
+    phone: z.string({
+        required_error: "יש להזין מספר טלפון"
+    }).regex(/^05\d{8}$/, "מספר טלפון חייב להיות באורך של 10 ספרות"),
+    college: z.string({
+        required_error: "יש להזין מכללה"
+    }),
+    track: z.enum(tracks, { required_error: "יש לבחור מסלול" }),
+    _class: z.enum(classes, { required_error: "יש לבחור חוג" }),
+    year: z.number({
+        required_error: "יש להזין שנה אקדמית"
+    }).int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
+})
 
 const UserUpdateForm = ({ uid, afterUpdate }) => {
 
@@ -25,6 +50,7 @@ const UserUpdateForm = ({ uid, afterUpdate }) => {
     const dispatch = useDispatch();
 
     const { register, setValue, formState: { defaultValues }, handleSubmit } = useForm({
+        resolver: zodResolver(validator),
         defaultValues: async () => {
             const result = await getUserById(uid)
             setLoadingUser(false);
@@ -92,7 +118,7 @@ const UserUpdateForm = ({ uid, afterUpdate }) => {
             </div>
             <div>
                 <Label>שנת לימודים</Label>
-                <Input type="text" {...register("year")} placeholder="שנת לימודים" />
+                <Input {...register("year", { required: true, valueAsNumber: true, min: 1, max: 6 })} min={1} max={6} type="number" placeholder="שנה אקדמית" />
             </div>
             <Button loading={loading} className="bg-black p-2 text-white rounded-md">עדכון</Button>
         </form>
