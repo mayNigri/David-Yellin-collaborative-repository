@@ -258,7 +258,7 @@ const HomePage = () => {
             handleGetMyLessons();
           }} />
           :
-          <div className="text-xl">
+          <div className="text-xl my-5">
             <Link className="text-blue-500 hover:text-blue-700 font-bold" to="/lesson">לחץ כאן</Link> כדי ליצור את המערך הראשון שלך
           </div>
 
