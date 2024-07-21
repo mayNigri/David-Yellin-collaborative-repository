@@ -24,9 +24,6 @@ const validator = z.object({
     email: z.string({
         required_error: "יש להזין אימייל"
     }).email("יש להזין אימייל תקין"),
-    password: z.string({
-        required_error: "יש להזין סיסמה"
-    }).min(8, "הסיסמה חייבת להיות באורך של 8 תווים לפחות"),
     fullName: z.string({
         required_error: "יש להזין שם מלא"
     }),
@@ -37,7 +34,7 @@ const validator = z.object({
         required_error: "יש להזין מכללה"
     }),
     track: z.enum(tracks, { required_error: "יש לבחור מסלול" }),
-    _class: z.enum(classes, { required_error: "יש לבחור חוג" }),
+    class: z.enum(classes, { required_error: "יש לבחור חוג" }),
     year: z.number({
         required_error: "יש להזין שנה אקדמית"
     }).int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
@@ -49,7 +46,7 @@ const UserUpdateForm = ({ uid, afterUpdate }) => {
     const [loadingUser, setLoadingUser] = useState(true);
     const dispatch = useDispatch();
 
-    const { register, setValue, formState: { defaultValues }, handleSubmit } = useForm({
+    const { register, setValue, formState: { defaultValues, errors }, handleSubmit } = useForm({
         resolver: zodResolver(validator),
         defaultValues: async () => {
             const result = await getUserById(uid)
@@ -121,6 +118,10 @@ const UserUpdateForm = ({ uid, afterUpdate }) => {
                 <Input {...register("year", { required: true, valueAsNumber: true, min: 1, max: 6 })} min={1} max={6} type="number" placeholder="שנה אקדמית" />
             </div>
             <Button loading={loading} className="bg-black p-2 text-white rounded-md">עדכון</Button>
+
+            {errors && Object.keys(errors).map((err) => {
+                return <p key={err} className="text-red-600">{errors[err].message}</p>
+            })}
         </form>
     )
 }
