@@ -143,6 +143,7 @@ const UsersTab = () => {
 
     return (
         <div className="admin-container">
+            
             <h2>משתמשים רשומים</h2>
 
             <form onSubmit={handleSearch} className="flex items-center relative py-5 max-w-[300px] gap-5">
