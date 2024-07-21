@@ -101,8 +101,6 @@ const LessonForm = ({ navAfter = true, id, afterUpdate }) => {
         setLoading(false)
     };
 
-    console.log(user.uid);
-
     if (loading) {
         return <div className="flex items-center justify-center min-h-screen">
             <LoadingIndicator />

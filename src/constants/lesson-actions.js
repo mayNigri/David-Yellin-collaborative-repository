@@ -1,4 +1,4 @@
-import { addDoc, arrayRemove, arrayUnion, deleteDoc, endAt, getDoc, getDocs, limit, orderBy, query, serverTimestamp, startAt, updateDoc, where } from "firebase/firestore"
+import { addDoc, arrayRemove, arrayUnion, deleteDoc, endAt, getDoc, getDocs, limit, orderBy, query, serverTimestamp, startAt, updateDoc, where, collection } from "firebase/firestore"
 import { commentsRef, lessonRef, lessonsRef, notificationsRef, userRef, usersRef } from "./refs";
 import { firestore } from "../services/firebase";
 
@@ -78,7 +78,10 @@ export const getLessonById = async (lessonId) => {
 
 export const getLessonComments = async (lessonId, _limit = 5) => {
     const comments = await getDocs(query(commentsRef(lessonId), limit(_limit), orderBy("createdAt", "desc")))
-    return comments.docs.map((d) => d.data());
+    return comments.docs.map((d) => ({
+        ...d.data(),
+        id: d.id
+    }));
 }
 
 export const postComment = async (uid, user_name, lessonId, comment) => {
@@ -123,8 +126,8 @@ export const searchLessonByName = async (name) => {
 
 export const deleteLesson = async (id) => {
     await deleteDoc(lessonRef(id));
+
     const toUpdate = await getDocs(query(usersRef, where("favorites", "array-contains", id)));
-    console.log(toUpdate.docs.map((d) => d.id));
     const updateArr = await Promise.all(toUpdate.docs.map((d) => {
         return updateDoc(userRef(d.id), {
             favorites: arrayRemove(id)

@@ -64,7 +64,7 @@ const Rating = ({ lessonId }) => {
                 {new Array(5).fill(null).map((star, index) => {
                     index += 1;
                     return (
-                        <StarIcon className={index <= (hover || rating) ? "fill-yellow-400" : "off"} onClick={() => handleClick(index)} />
+                        <StarIcon key={index} className={index <= (hover || rating) ? "fill-yellow-400" : "off"} onClick={() => handleClick(index)} />
                     );
                 })}
             </div>

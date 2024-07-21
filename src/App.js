@@ -43,7 +43,8 @@ function App() {
               if (userDoc.exists()) {
                 dispatch(setUserDoc({
                   ...userDoc.data(),
-                  favorites: userDoc.data().favorites || []
+                  favorites: userDoc.data().favorites || [],
+                  createdAt: userDoc.data().createdAt.toMillis()
                 }));
               }
               dispatch(setUser(user.toJSON()));

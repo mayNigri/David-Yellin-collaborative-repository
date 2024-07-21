@@ -1,8 +1,8 @@
-import { addDoc, arrayUnion, deleteDoc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, deleteDoc, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
 import { StarIcon } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { commentsRef, lessonRef, userRef } from "../../constants/refs";
+import { commentRef, commentsRef, lessonRef, userRef } from "../../constants/refs";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserDoc, setUserDoc } from "../../redux/auth-slice";
 import {
@@ -24,6 +24,7 @@ import Rating from "../../components/rating";
 import ConfirmationModal from "../../components/confirmation-modal";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { firestore } from "../../services/firebase";
 
 const validator = z.object({
   comment: z.string().trim().min(3, "התגובה חייבת להכיל לפחות 3 תווים")
@@ -203,9 +204,18 @@ const LessonPage = () => {
 
           {comments.length > 0 && <h2>תגובות</h2>}
           {comments.map((comment) =>
-            <div className="mt-2 border rounded-md w-[500px] p-2">
-              <p><h3 className="inline">{comment.name}</h3><span className="text-sm inline mx-2">{new Date(comment.createdAt.toMillis()).toLocaleDateString("en-GB")}</span></p>
-              <p className="whitespace-normal break-words">{comment.comment}</p>
+            <div key={comment.id} className="mt-2 border rounded-md w-[500px] p-2 flex justify-between">
+              <div>
+                <p><h3 className="inline">{comment.name}</h3><span className="text-sm inline mx-2">{new Date(comment.createdAt.toMillis()).toLocaleDateString("en-GB")}</span></p>
+                <p className="whitespace-normal break-words">{comment.comment}</p>
+
+              </div>
+              <div>
+                {(lesson.uid === user.id || user.role === 'admin') && <Button variant="destructive" onClick={async () => {
+                  await deleteDoc(commentRef(lessonId, comment.id))
+                  setComments(prev => prev.filter(c => c.id !== comment.id))
+                }}>מחק</Button>}
+              </div>
             </div>
           )}
         </div>
