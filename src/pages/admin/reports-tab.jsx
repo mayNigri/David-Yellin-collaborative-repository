@@ -107,10 +107,10 @@ const ReportsTab = () => {
 
             <div className="grid grid-cols-2 gap-10">
                 <div className="h-96 w-96">
-                    <PieChart labels={Object.keys(usersByCollege)} values={Object.values(usersByCollege)} title={"משתמשים רשומים בכל מכללה"} />
+                    <PieChart labels={Object.keys(usersByCollege)} values={Object.values(usersByCollege)} title={"משתמשים רשומים לפי מכללה"} />
                 </div>
                 <div className="h-96 w-96">
-                    <PieChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנה"} />
+                    <PieChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנת לימודים"} />
                 </div>
                 <div className="h-96 w-96">
                     <PieChart labels={Object.keys(lessonsByTrack)} values={Object.values(lessonsByTrack)} title={"שיעורים לפי מסלול"} />
@@ -120,9 +120,6 @@ const ReportsTab = () => {
                 </div>
                 <div className="h-96 w-96">
                     <PieChart labels={Object.keys(lessonsByGrade)} values={Object.values(lessonsByGrade)} title={"שיעורים לפי חוג"} />
-                </div>
-                <div className="h-96 w-96">
-                    <BarChart labels={Object.keys(usersByYear)} values={Object.values(usersByYear)} title={"משתמשים רשומים לפי שנה"} />
                 </div>
             </div>
         </div>
