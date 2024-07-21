@@ -1,6 +1,7 @@
 import { addDoc, arrayRemove, arrayUnion, deleteDoc, endAt, getDoc, getDocs, limit, orderBy, query, serverTimestamp, startAt, updateDoc, where, collection } from "firebase/firestore"
 import { commentsRef, lessonRef, lessonsRef, notificationsRef, userRef, usersRef } from "./refs";
-import { firestore } from "../services/firebase";
+import { deleteFileByUrl, firestore } from "../services/firebase";
+import { deleteObject, ref } from "firebase/storage";
 
 export const getMyLessons = async (uid) => {
     const q = query(lessonsRef, where("uid", "==", uid));
@@ -125,6 +126,11 @@ export const searchLessonByName = async (name) => {
 }
 
 export const deleteLesson = async (id) => {
+
+    const lessonDoc = await getLessonById(id);
+    if (lessonDoc.fileUrl) {
+        await deleteFileByUrl(lessonDoc.fileUrl);
+    }
     await deleteDoc(lessonRef(id));
 
     const toUpdate = await getDocs(query(usersRef, where("favorites", "array-contains", id)));

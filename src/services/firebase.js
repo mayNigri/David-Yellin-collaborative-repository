@@ -7,6 +7,8 @@ import {
   uploadBytes,
   ref as storageRef,
   getDownloadURL,
+  ref,
+  deleteObject,
 } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -37,4 +39,9 @@ const uploadFileAndGetUrl = async (file, path) => {
   return url;
 };
 
-export { auth, firestore, uploadFileAndGetUrl };
+const deleteFileByUrl = async (fileUrl) => {
+  const f = ref(storage, fileUrl);
+  await deleteObject(f);
+}
+
+export { auth, firestore, deleteFileByUrl, uploadFileAndGetUrl };

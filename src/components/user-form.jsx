@@ -117,7 +117,7 @@ const UserUpdateForm = ({ uid, afterUpdate }) => {
                 <Label>שנת לימודים</Label>
                 <Input {...register("year", { required: true, valueAsNumber: true, min: 1, max: 6 })} min={1} max={6} type="number" placeholder="שנה אקדמית" />
             </div>
-            <Button loading={loading} className="bg-black p-2 text-white rounded-md">עדכון</Button>
+            <Button loading={loading}>עדכון</Button>
 
             {errors && Object.keys(errors).map((err) => {
                 return <p key={err} className="text-red-600">{errors[err].message}</p>
