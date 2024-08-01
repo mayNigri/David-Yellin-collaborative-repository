@@ -12,39 +12,41 @@ import {
     SelectValue,
 } from './ui/select';
 import { userRef } from '../constants/refs';
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { getUserById } from '../constants/user-actions';
 import LoadingIndicator from './loading-indicator';
 import { useDispatch } from 'react-redux';
 import { setUserDoc } from '../redux/auth-slice';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-const validator = z.object({
-    email: z.string({
-        required_error: "יש להזין אימייל"
-    }).email("יש להזין אימייל תקין"),
-    fullName: z.string({
-        required_error: "יש להזין שם מלא"
-    }),
-    phone: z.string({
-        required_error: "יש להזין מספר טלפון"
-    }).regex(/^05\d{8}$/, "מספר טלפון חייב להיות באורך של 10 ספרות"),
-    college: z.string({
-        required_error: "יש להזין מכללה"
-    }),
-    track: z.enum(tracks, { required_error: "יש לבחור מסלול" }),
-    class: z.enum(classes, { required_error: "יש לבחור חוג" }),
-    year: z.number({
-        required_error: "יש להזין שנה אקדמית"
-    }).int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
-})
+import { getColleges } from '../constants/config-actions';
 
 const UserUpdateForm = ({ uid, afterUpdate }) => {
 
     const [loading, setLoading] = useState(false)
     const [loadingUser, setLoadingUser] = useState(true);
     const dispatch = useDispatch();
+    const [colleges, setColleges] = useState([]);
+
+    const validator = useMemo(() => z.object({
+        email: z.string({
+            required_error: "יש להזין אימייל"
+        }).email("יש להזין אימייל תקין"),
+        fullName: z.string({
+            required_error: "יש להזין שם מלא"
+        }),
+        phone: z.string({
+            required_error: "יש להזין מספר טלפון"
+        }).regex(/^05\d{8}$/, "מספר טלפון חייב להיות באורך של 10 ספרות"),
+        college: z.enum(colleges, {
+            required_error: "יש לבחור מכללה"
+        }),
+        track: z.enum(tracks, { required_error: "יש לבחור מסלול" }),
+        class: z.enum(classes, { required_error: "יש לבחור חוג" }),
+        year: z.number({
+            required_error: "יש להזין שנה אקדמית"
+        }).int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
+    }), [colleges])
 
     const { register, setValue, formState: { defaultValues, errors }, handleSubmit } = useForm({
         resolver: zodResolver(validator),
@@ -55,6 +57,11 @@ const UserUpdateForm = ({ uid, afterUpdate }) => {
         },
         disabled: loading
     })
+
+    useEffect(() => {
+        getColleges()
+            .then((c) => setColleges(c))
+    }, [])
 
     const update = async (input) => {
         setLoading(true)
@@ -79,8 +86,19 @@ const UserUpdateForm = ({ uid, afterUpdate }) => {
             </div>
             <div>
                 <Label>מכללה</Label>
-                <Input type="text" {...register("college")} placeholder="מכללה" />
-            </div>
+                <Select onValueChange={(val) => setValue('college', val)}>
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="אנא בחר" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {colleges.map((item) => {
+                            return (
+                                <SelectItem key={item} value={item}>{item}</SelectItem>
+                            )
+                        })
+                        }
+                    </SelectContent>
+                </Select>            </div>
             <div>
                 <Label>מסלול</Label>
                 <Select defaultValue={defaultValues.track} onValueChange={(val) => setValue('track', val)}>

@@ -37,14 +37,13 @@ const LessonPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
   const [creator, setCreator] = useState("")
+  const [creatorCollege, setCreatorCollege] = useState("")
   const [comments, setComments] = useState([]);
   const [postingComment, setIsPostingComment] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const user = useSelector(selectUserDoc);
   const dispatch = useDispatch();
-
-
 
   const getLessonDoc = async () => {
     setError(null);
@@ -65,6 +64,7 @@ const LessonPage = () => {
         setCreator("משתמש לא נמצא")
       }
       setCreator(creatorDoc.fullName);
+      setCreatorCollege(creatorDoc.college);
 
       const lessonComments = await getLessonComments(lessonId);
       setComments(lessonComments);
@@ -159,7 +159,7 @@ const LessonPage = () => {
                   <p><b>מסלול: </b> {lesson.track}</p>
                   <p><b>חוג: </b> {lesson.class}</p>
                   <p><b>כיתה: </b> {lesson.grade}</p>
-                  <p><b>יוצר השיעור: </b> {creator}</p>
+                  <p><b>יוצר השיעור: </b> {creator} ({creatorCollege})</p>
                   <p><b>עודכן לאחרונה: </b> {new Date(lesson.updatedAt.toMillis()).toLocaleDateString("en-GB")}</p>
                 </div>
               </div>

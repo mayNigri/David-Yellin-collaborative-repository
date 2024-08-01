@@ -19,30 +19,8 @@ import {
 } from '../../components/ui/select';
 import { Link, useNavigate } from 'react-router-dom';
 import logo_blue from '../../lib/logo_blue.png'
-import { useState } from 'react';
-
-const validator = z.object({
-    email: z.string({
-        required_error: "יש להזין אימייל"
-    }).email("יש להזין אימייל תקין"),
-    password: z.string({
-        required_error: "יש להזין סיסמה"
-    }).min(8, "הסיסמה חייבת להיות באורך של 8 תווים לפחות"),
-    fullName: z.string({
-        required_error: "יש להזין שם מלא"
-    }),
-    phone: z.string({
-        required_error: "יש להזין מספר טלפון"
-    }).regex(/^05\d{8}$/, "מספר טלפון חייב להיות באורך של 10 ספרות"),
-    college: z.string({
-        required_error: "יש להזין מכללה"
-    }),
-    track: z.enum(tracks, { required_error: "יש לבחור מסלול" }),
-    _class: z.enum(classes, { required_error: "יש לבחור חוג" }),
-    year: z.number({
-        required_error: "יש להזין שנה אקדמית"
-    }).int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
-})
+import { useEffect, useMemo, useState } from 'react';
+import { getColleges } from '../../constants/config-actions';
 
 const WavyLine = () => (
     <svg
@@ -66,9 +44,39 @@ const errorCodes = {
 
 const RegisterPage = () => {
 
+    const [colleges, setColleges] = useState([]);
+
+    const validator = useMemo(() => z.object({
+        email: z.string({
+            required_error: "יש להזין אימייל"
+        }).email("יש להזין אימייל תקין"),
+        password: z.string({
+            required_error: "יש להזין סיסמה"
+        }).min(8, "הסיסמה חייבת להיות באורך של 8 תווים לפחות"),
+        fullName: z.string({
+            required_error: "יש להזין שם מלא"
+        }),
+        phone: z.string({
+            required_error: "יש להזין מספר טלפון"
+        }).regex(/^05\d{8}$/, "מספר טלפון חייב להיות באורך של 10 ספרות"),
+        college: z.enum(colleges, {
+            required_error: "יש לבחור מכללה"
+        }),
+        track: z.enum(tracks, { required_error: "יש לבחור מסלול" }),
+        _class: z.enum(classes, { required_error: "יש לבחור חוג" }),
+        year: z.number({
+            required_error: "יש להזין שנה אקדמית"
+        }).int().min(1, "שנה אקדמית חייבת להיות גדולה מ-0")
+    }), [colleges])
+
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({
         resolver: zodResolver(validator)
     });
+
+    useEffect(() => {
+        getColleges()
+            .then((c) => setColleges(c))
+    }, [])
 
     const navigate = useNavigate();
     const [firebaseError, setfirebaseError] = useState(null);
@@ -135,7 +143,19 @@ const RegisterPage = () => {
 
                     <div>
                         <Label htmlFor="college">מכללה</Label>
-                        <Input {...register("college", { required: true })} type="text" placeholder="מכללה" />
+                        <Select onValueChange={(val) => setValue('college', val)}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="אנא בחר" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {colleges.map((item) => {
+                                    return (
+                                        <SelectItem key={item} value={item}>{item}</SelectItem>
+                                    )
+                                })
+                                }
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     <div>

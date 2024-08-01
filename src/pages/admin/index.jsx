@@ -5,6 +5,7 @@ import './admin.css';
 import ReportsTab from './reports-tab.jsx';
 import UsersTab from './users-tab.jsx';
 import LessonsTab from './lessons-tab.jsx';
+import CollegesTab from './colleges-tab.jsx';
 
 const Admin = () => {
   return (
@@ -14,6 +15,7 @@ const Admin = () => {
           <Tab>משתמשים</Tab>
           <Tab>מערכים</Tab>
           <Tab>דוחות</Tab>
+          <Tab>רשימת מכללות</Tab>
         </TabList>
 
         <TabPanel>
@@ -26,6 +28,10 @@ const Admin = () => {
 
         <TabPanel>
           <ReportsTab />
+        </TabPanel>
+
+        <TabPanel>
+          <CollegesTab />
         </TabPanel>
       </Tabs>
     </div>

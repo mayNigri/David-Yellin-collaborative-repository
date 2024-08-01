@@ -10,6 +10,7 @@ export const commentRef = (lessonId, commentId) => doc(commentsRef(lessonId), co
 export const notificationsRef = (uid) => collection(firestore, doc(firestore, "users", uid).path, "notifications")
 export const notificationsQuery = (uid, _limit = 8) => query(collection(firestore, doc(firestore, "users", uid).path, "notifications"), orderBy("createdAt", "desc"), limit(_limit))
 
+export const collegesRef = doc(firestore, "config", "colleges");
 
 const ITEMS_PER_PAGE = 8;
 export const getLessonsByPageQuery = async (lastDate, ...queryParams) => {
